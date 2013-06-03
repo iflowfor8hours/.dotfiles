@@ -1,0 +1,23 @@
+# Easier navigation: .., ..., ...., ....., ~ and -
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias .....="cd ../../../.."
+alias ~="cd ~" # `cd` is probably faster to type though
+alias -- -="cd -"
+
+# Shortcuts
+alias dl="cd ~/Downloads"
+alias dt="cd ~/Desktop"
+alias g="git"
+alias h="history"
+# alias j="jobs" # Conflicts with autojump
+alias e="emacs --no-window-system"
+alias v="vim"
+alias s="subl ."
+
+alias l='ls -lhF'
+alias la='ls -lahF'
+
+alias ld='ls -lh | grep "^d"'
+alias lda='ls -lah | grep "^d"'

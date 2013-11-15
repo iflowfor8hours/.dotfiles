@@ -1,7 +1,0 @@
-export PATH="~/bin:~/bin/datatools:${PATH}"
-
-# Give precedence to Homebrew-managed tools
-# /usr/local/bin is on the default path, but it appears after /usr/bin
-export PATH="/usr/local/bin:${PATH}"
-# For the Homebrew-managed Python 3, executables go here:
-export PATH="/usr/local/share/python:/usr/local/share/python3:${PATH}"

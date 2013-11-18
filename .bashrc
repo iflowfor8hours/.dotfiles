@@ -1,19 +1,17 @@
 ## Path
-export PATH="~/bin:~/bin/datatools:${PATH}"
 
 # Give precedence to Homebrew-managed tools
 # /usr/local/bin is on the default path, but it appears after /usr/bin
-export PATH="/usr/local/bin:${PATH}"
-# And the Homebrew Ruby 2.0 gem
-export PATH="/usr/local/opt/ruby/bin:$PATH"
+export PATH="~/bin:/usr/local/bin:${PATH}"
+
 
 ## Aliases
+
 # Easier navigation: .., ..., ...., ....., ~ and -
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
 alias .....="cd ../../../.."
-alias ~="cd ~" # `cd` is probably faster to type though
 alias -- -="cd -"
 
 # Shortcuts
@@ -25,15 +23,24 @@ alias e="emacs --no-window-system"
 alias v="vim"
 alias s="subl ."
 
-alias ls='ls -G' # Color output
+# Better file listings
+alias ls='ls --no-group --human-readable --classify --color=auto'
+alias lsa='ls --almost-all'
+alias l='ls -l'
+alias la='l --almost-all'
+alias ld='l | grep "^d"'
+alias lda='la | grep "^d"'
 
-alias l='ls -lhFG'
-alias la='ls -lahFG'
+# View HTTP traffic
+alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
+alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
 
-alias ld='ls -lhG | grep "^d"'
-alias lda='ls -lahG | grep "^d"'
+# Canonical hex dump; some systems have this symlinked
+command -v hd > /dev/null || alias hd="hexdump -C"
+
 
 ## Functions
+
 # Determine size of a file or total size of a directory
 function fs() {
     if du -b /dev/null > /dev/null 2>&1; then
@@ -70,22 +77,24 @@ cdf() {
 }
 alias f='open -a Finder ./'
 
+
 ## Completion
+
 # Add tab completion for SSH hostnames based on ~/.ssh/config, ignoring wildcards
 [ -e "$HOME/.ssh/config" ] && complete -o "default" -o "nospace" -W "$(grep "^Host" ~/.ssh/config | grep -v "[?*]" | cut -d " " -f2 | tr ' ' '\n')" scp sftp ssh
 
-[[ -r $(brew --prefix)/etc/bash_completion ]] && source $(brew --prefix)/etc/bash_completion
+[[ -x "$(which brew)" ]] && [[ -r $(brew --prefix)/etc/bash_completion ]] && source $(brew --prefix)/etc/bash_completion
+
 
 ## Every other random-ass thing
-export EDITOR="emacs"
+
+export EDITOR="emacs --no-window-system"
 
 # History control
 export HISTIGNORE="&:ls:cd:cd -:pwd:exit:logout:date:* --help"
 export HISTSIZE=32768
 export HISTFILESIZE=$HISTSIZE
-export HISTCONTROL=ignoredups
-# Append to the Bash history file, rather than overwriting it
-shopt -s histappend
+export HISTCONTROL=ignoreboth
 
 # Prefer US English and use UTF-8
 export LANG="en_US"
@@ -94,21 +103,9 @@ export LC_ALL="en_US.UTF-8"
 # Always enable colored `grep` output
 export GREP_OPTIONS="--color=auto"
 
-[[ -s `brew --prefix`/etc/autojump.sh ]] && source `brew --prefix`/etc/autojump.sh
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
 
-# Show list of matches immediately instead of double-tabbing
-bind "set show-all-if-ambiguous On"
-
-# Case-insensitive globbing (used in pathname expansion)
-shopt -s nocaseglob
-
-# Autocorrect typos in path names when using `cd`
-shopt -s cdspell
-
-# Enable some Bash 4 features when possible:
-# * `autocd`, e.g. `**/qux` will enter `./foo/bar/baz/qux`
-# * Recursive globbing, e.g. `echo **/*.txt`
-for option in autocd globstar; do
-    shopt -s "$option" 2> /dev/null
-done
-unset option
+# Nicer options for Bash. See
+# http://www.gnu.org/software/bash/manual/html_node/The-Shopt-Builtin.html
+shopt -s histappend checkwinsize nocaseglob cdspell autocd globstar

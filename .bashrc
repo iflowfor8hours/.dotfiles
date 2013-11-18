@@ -90,6 +90,8 @@ alias f='open -a Finder ./'
 
 export EDITOR="emacs --no-window-system"
 
+[[ -r /usr/share/autojump/autojump.sh ]] && source /usr/share/autojump/autojump.sh
+
 # History control
 export HISTIGNORE="&:ls:cd:cd -:pwd:exit:logout:date:* --help"
 export HISTSIZE=32768

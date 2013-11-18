@@ -13,4 +13,5 @@
   (when (not (package-installed-p p))
     (package-install p)))
 
-(load-theme 'solarized-dark t)
+(when window-system
+  (load-theme 'solarized-dark t))

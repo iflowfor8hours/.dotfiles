@@ -24,10 +24,20 @@ alias v="vim"
 alias s="subl ."
 
 # Better file listings
-alias ls='ls --no-group --human-readable --classify --color=auto'
-alias lsa='ls --almost-all'
-alias l='ls -l'
-alias la='l --almost-all'
+case $OSTYPE in
+darwin*)
+    alias ls='ls -hFG' # Human-readable, classiFy, color output
+    alias lsa='ls -A'  # Almost all
+    alias l='ls -o'    # Omit group name
+    alias la='l -A'
+    ;;
+*)
+    alias ls='ls --no-group --human-readable --classify --color=auto'
+    alias lsa='ls --almost-all'
+    alias l='ls -l'
+    alias la='l --almost-all'
+    ;;
+esac
 alias ld='l | grep "^d"'
 alias lda='la | grep "^d"'
 
@@ -110,4 +120,4 @@ export GREP_OPTIONS="--color=auto"
 
 # Nicer options for Bash. See
 # http://www.gnu.org/software/bash/manual/html_node/The-Shopt-Builtin.html
-shopt -s histappend checkwinsize nocaseglob cdspell autocd globstar
+shopt -s histappend checkwinsize nocaseglob cdspell autocd globstar &> /dev/null

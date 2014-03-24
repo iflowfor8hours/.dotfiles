@@ -3,6 +3,9 @@
 # Give precedence to Homebrew-managed tools
 # /usr/local/bin is on the default path, but it appears after /usr/bin
 export PATH="~/bin:/usr/local/bin:${PATH}"
+# Look for the Linux fork of Homebrew
+export PATH="$HOME/.linuxbrew/bin:$PATH"
+export LD_LIBRARY_PATH="$HOME/.linuxbrew/lib:$LD_LIBRARY_PATH"
 
 
 ## Aliases
@@ -121,3 +124,7 @@ export GREP_OPTIONS="--color=auto"
 # Nicer options for Bash. See
 # http://www.gnu.org/software/bash/manual/html_node/The-Shopt-Builtin.html
 shopt -s histappend checkwinsize nocaseglob cdspell autocd globstar &> /dev/null
+
+# Added by Canopy installer on 2014-03-13
+# VIRTUAL_ENV_DISABLE_PROMPT can be set to '' to make bashprompt show that Canopy is active, otherwise 1
+VIRTUAL_ENV_DISABLE_PROMPT=1 source /home/dgrady/Enthought/Canopy_64bit/User/bin/activate

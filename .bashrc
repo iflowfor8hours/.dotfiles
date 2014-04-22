@@ -98,6 +98,14 @@ alias f='open -a Finder ./'
 
 [[ -x "$(which brew)" ]] && [[ -r $(brew --prefix)/etc/bash_completion ]] && source $(brew --prefix)/etc/bash_completion
 
+# Add bash completion for interactive shells
+if ! shopt -oq posix; then
+ if [ -f /usr/share/bash-completion/bash_completion ]; then
+   . /usr/share/bash-completion/bash_completion
+ elif [ -f /etc/bash_completion ]; then
+   . /etc/bash_completion
+ fi
+fi
 
 ## Every other random-ass thing
 
@@ -124,7 +132,3 @@ export GREP_OPTIONS="--color=auto"
 # Nicer options for Bash. See
 # http://www.gnu.org/software/bash/manual/html_node/The-Shopt-Builtin.html
 shopt -s histappend checkwinsize nocaseglob cdspell autocd globstar &> /dev/null
-
-# Added by Canopy installer on 2014-03-13
-# VIRTUAL_ENV_DISABLE_PROMPT can be set to '' to make bashprompt show that Canopy is active, otherwise 1
-VIRTUAL_ENV_DISABLE_PROMPT=1 source /home/dgrady/Enthought/Canopy_64bit/User/bin/activate

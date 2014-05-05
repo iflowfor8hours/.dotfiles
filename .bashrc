@@ -112,7 +112,7 @@ fi
 
 ## Every other random-ass thing
 
-export EDITOR="emacs --no-window-system"
+export EDITOR="emacs"
 
 [[ -r /usr/share/autojump/autojump.sh ]] && source /usr/share/autojump/autojump.sh
 

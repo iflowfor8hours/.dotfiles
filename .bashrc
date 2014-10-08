@@ -2,10 +2,7 @@
 
 # Give precedence to Homebrew-managed tools
 # /usr/local/bin is on the default path, but it appears after /usr/bin
-export PATH="~/bin:/usr/local/bin:${PATH}"
-# Look for the Linux fork of Homebrew
-export PATH="$HOME/.linuxbrew/bin:$PATH"
-export LD_LIBRARY_PATH="$HOME/.linuxbrew/lib:$LD_LIBRARY_PATH"
+export PATH="~/Library/Scripts:/usr/local/bin:${PATH}"
 
 
 ## Aliases
@@ -66,17 +63,6 @@ function fs() {
     else
         du $arg .[^.]* *
     fi
-}
-
-# Pretty-printers for man pages
-manp()
-{
-    man -t "${1}" | open -f -a Skim
-}
-mantest()
-{
-    # (cd /usr/share/man && (/usr/bin/gunzip -c `man -w ${1}` 2>/dev/null || cat `man -w ${1}`) | /usr/bin/tbl | /usr/bin/groff -Tps -dpaper=letter -P-p10.5i,8i -mandoc -c) | open -f -a Skim
-    (cd /usr/share/man && (/usr/bin/gunzip -c `man -w ${1}` 2>/dev/null || cat `man -w ${1}`) | /usr/bin/tbl | /usr/bin/groff -Thtml -mandoc -c)
 }
 
 # Jumping to location of frontmost Finder window

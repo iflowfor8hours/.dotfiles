@@ -93,7 +93,7 @@ fi
 
 export EDITOR="emacs"
 
-[[ -r /usr/share/autojump/autojump.sh ]] && source /usr/share/autojump/autojump.sh
+[[ -s $(brew --prefix)/etc/autojump.sh ]] && . $(brew --prefix)/etc/autojump.sh
 
 # History control
 export HISTIGNORE="&:ls:cd:cd -:pwd:exit:logout:date:* --help"

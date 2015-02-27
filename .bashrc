@@ -41,13 +41,6 @@ esac
 alias ld='l | grep "^d"'
 alias lda='la | grep "^d"'
 
-# View HTTP traffic
-alias sniff="sudo ngrep -d 'en1' -t '^(GET|POST) ' 'tcp and port 80'"
-alias httpdump="sudo tcpdump -i en1 -n -s 0 -w - | grep -a -o -E \"Host\: .*|GET \/.*\""
-
-# Canonical hex dump; some systems have this symlinked
-command -v hd > /dev/null || alias hd="hexdump -C"
-
 
 ## Functions
 

@@ -1,9 +1,11 @@
 ## Path
 
 # Give precedence to Homebrew-managed tools
-# /usr/local/bin is on the default path, but it appears after /usr/bin
-export PATH="~/Library/Scripts:/usr/local/bin:${PATH}"
+export PATH="~/Library/Scripts:/usr/local/sbin:${PATH}"
 
+# Anaconda's Python distribution?
+# Not adding it by default because Homebrew complains
+alias goconda="[[ -d ~/anaconda ]] && export PATH=\"~/anaconda/bin:${PATH}\""
 
 ## Aliases
 

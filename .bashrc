@@ -1,11 +1,12 @@
 ## Path
 
-# Give precedence to Homebrew-managed tools
-export PATH="~/Library/Scripts:/usr/local/sbin:${PATH}"
+# ~/Library/Scripts/ is for my random stuff
+# Some Homebrew packages install executables to /usr/local/sbin
+export PATH="${HOME}/Library/Scripts:/usr/local/sbin:${PATH}"
 
 # Anaconda's Python distribution?
 # Not adding it by default because Homebrew complains
-alias goconda="[[ -d ~/anaconda ]] && export PATH=\"~/anaconda/bin:${PATH}\""
+alias goconda="[[ -d ${HOME}/anaconda ]] && export PATH=\"${HOME}/anaconda/bin:${PATH}\""
 
 ## Aliases
 
@@ -19,6 +20,8 @@ alias -- -="cd -"
 # Shortcuts
 alias dl="cd ~/Downloads"
 alias dt="cd ~/Desktop"
+alias doc="cd ~/Documents"
+alias db="cd ~/Dropbox"
 alias g="git"
 alias h="history"
 alias e="emacs --no-window-system"

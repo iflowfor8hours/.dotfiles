@@ -249,14 +249,14 @@ layers configuration. You are free to put any user code."
   (setq dang-journal-directory "~/Dropbox/Journal")
 
   ;; Deft
-  (setq deft-directory "~/Dropbox/Notes")
+  (setq deft-directory "~/notes")
   (setq deft-use-filename-as-title t)
-  (setq deft-extensions '("markdown" "mdown" "md" "org" "txt" "text"))
+  (setq deft-extensions '("org" "markdown" "mdown" "md" "txt" "text"))
   (setq deft-markdown-mode-title-level 1)
   (setq deft-org-mode-title-prefix t)
 
   ;; Org
-  (setq org-directory "~/Dropbox/org")
+  (setq org-directory "~/org")
   (setq org-default-notes-file (concat org-directory "/¶ Notes.org"))
   (define-key global-map (kbd "C-c c") 'org-capture)
   )

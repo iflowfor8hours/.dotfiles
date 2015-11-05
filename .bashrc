@@ -4,9 +4,14 @@
 # Some Homebrew packages install executables to /usr/local/sbin
 export PATH="${HOME}/Library/Scripts:/usr/local/sbin:${PATH}"
 
-# Anaconda's Python distribution?
-# Not adding it by default because Homebrew complains
-alias goconda="[[ -d ${HOME}/anaconda ]] && export PATH=\"${HOME}/anaconda/bin:${PATH}\""
+# If there's an Anaconda distribution, add it to the path, unless there's also Homebrew which assumes system Python
+if [ -d "${HOME}/anaconda" ]; then
+    if ! hash brew 2>/dev/null; then
+	export PATH="${HOME}/anaconda/bin:${PATH}"
+    else
+	alias goconda="export PATH=\"${HOME}/anaconda/bin:${PATH}\""
+    fi
+fi
 
 ## Aliases
 
@@ -81,7 +86,7 @@ alias f='open -a Finder ./'
 [ -e "$HOME/.ssh/config" ] && complete -o "default" -o "nospace" -W "$(grep "^Host" ~/.ssh/config | grep -v "[?*]" | cut -d " " -f2 | tr ' ' '\n')" scp sftp ssh
 
 # bash-completion on Mac OS X
-if [ -f $(brew --prefix)/etc/bash_completion ]; then
+if [ hash brew 2>/dev/null && -f $(brew --prefix)/etc/bash_completion ]; then
   . $(brew --prefix)/etc/bash_completion
 fi
 
@@ -98,7 +103,7 @@ fi
 
 export EDITOR="emacs"
 
-[[ -s $(brew --prefix)/etc/autojump.sh ]] && . $(brew --prefix)/etc/autojump.sh
+hash brew 2>/dev/null && [[ -s $(brew --prefix)/etc/autojump.sh ]] && . $(brew --prefix)/etc/autojump.sh
 
 # History control
 export HISTIGNORE="&:ls:cd:cd -:pwd:exit:logout:date:* --help"

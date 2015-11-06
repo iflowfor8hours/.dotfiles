@@ -128,4 +128,4 @@ export GREP_OPTIONS="--color=auto"
 shopt -s histappend checkwinsize nocaseglob cdspell autocd globstar &> /dev/null
 
 # Check for machine-specific configs
-[[ -r ~/.bashrc_local ]] && source ~/.bashrc_local
+[[ -r ${HOME}/.profile_local ]] && source ${HOME}/.profile_local

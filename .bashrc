@@ -1,10 +1,15 @@
+# .bashrc
+
+# Source global definitions if they exist
+[[ -r /etc/bashrc ]] && source /etc/bashrc
+
 ## Path
 
-# ~/Library/Scripts/ is for my random stuff
 # Some Homebrew packages install executables to /usr/local/sbin
 export PATH="${HOME}/Library/Scripts:/usr/local/sbin:${PATH}"
 
-# If there's an Anaconda distribution, add it to the path, unless there's also Homebrew which assumes system Python
+# If there's an Anaconda distribution, add it to the path,
+# unless there's also Homebrew which assumes system Python
 if [ -d "${HOME}/anaconda" ]; then
     if ! hash brew 2>/dev/null; then
 	export PATH="${HOME}/anaconda/bin:${PATH}"
@@ -29,9 +34,6 @@ alias doc="cd ~/Documents"
 alias db="cd ~/Dropbox"
 alias g="git"
 alias h="history"
-alias e="emacs --no-window-system"
-alias v="vim"
-alias s="subl ."
 
 # Better file listings
 case $OSTYPE in
@@ -124,3 +126,6 @@ export GREP_OPTIONS="--color=auto"
 # Nicer options for Bash. See
 # http://www.gnu.org/software/bash/manual/html_node/The-Shopt-Builtin.html
 shopt -s histappend checkwinsize nocaseglob cdspell autocd globstar &> /dev/null
+
+# Check for machine-specific configs
+[[ -r ~/.bashrc_local ]] && source ~/.bashrc_local

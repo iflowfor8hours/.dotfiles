@@ -1,7 +1,9 @@
 # .bashrc
 
 # Source global definitions if they exist
-[[ -r /etc/bashrc ]] && source /etc/bashrc
+if [ -r /etc/bashrc ]; then
+    source /etc/bashrc
+fi
 
 ## Path
 
@@ -128,4 +130,6 @@ export GREP_OPTIONS="--color=auto"
 shopt -s histappend checkwinsize nocaseglob cdspell autocd globstar &> /dev/null
 
 # Check for machine-specific configs
-[[ -r ${HOME}/.profile_local ]] && source ${HOME}/.profile_local
+if [ -r "${HOME}/.profile_local" ]; then
+    source "${HOME}/.profile_local"
+fi

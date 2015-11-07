@@ -83,4 +83,6 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-[[ -r ${HOME}/.profile_local ]] && source ${HOME}/.profile_local
+if [ -r "${HOME}/.profile_local" ]; then
+    source "${HOME}/.profile_local"
+fi

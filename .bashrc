@@ -5,8 +5,6 @@ if [ -r /etc/bashrc ]; then
     source /etc/bashrc
 fi
 
-## Aliases
-
 # Easier navigation: .., ..., ...., ....., ~ and -
 alias ..="cd .."
 alias ...="cd ../.."
@@ -32,26 +30,19 @@ esac
 alias ld='l | grep "^d"'
 alias lda='la | grep "^d"'
 
-## Every other random-ass thing
-
-export EDITOR="emacs"
-
 # History control
 export HISTIGNORE="&:ls:cd:cd -:pwd:exit:logout:date:* --help"
 export HISTSIZE=32768
 export HISTFILESIZE=$HISTSIZE
 export HISTCONTROL=ignoreboth
 
-# Prefer US English and use UTF-8
-export LANG="en_US"
-export LC_ALL="en_US.UTF-8"
-
-# Always enable colored `grep` output
-export GREP_OPTIONS="--color=auto"
-
 # Nicer options for Bash. See
 # http://www.gnu.org/software/bash/manual/html_node/The-Shopt-Builtin.html
 shopt -s histappend checkwinsize nocaseglob cdspell autocd globstar &> /dev/null
+
+if [ -r "${HOME}/.profile" ]; then
+    source "${HOME}/.profile"
+fi
 
 if [ -r "${HOME}/.profile_local" ]; then
     source "${HOME}/.profile_local"

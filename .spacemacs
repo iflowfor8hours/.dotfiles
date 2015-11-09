@@ -34,8 +34,7 @@ values."
      osx
      pandoc
      python
-     (shell :variables
-            shell-default-term-shell "/usr/local/bin/bash")
+     shell
      spell-checking
      syntax-checking
      version-control

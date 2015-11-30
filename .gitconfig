@@ -1,0 +1,5 @@
+[user]
+	name = Daniel Grady
+	email = d.c.grady@gmail.com
+[core]
+	excludesfile = /Users/dgrady/.gitignore

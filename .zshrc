@@ -81,6 +81,11 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+# Only load Liquid Prompt in interactive shells, not from a script or from scp
+if [[ -o interactive && -r ~/liquidprompt/liquidprompt ]]; then
+    source ~/liquidprompt/liquidprompt
+fi
+
 export EDITOR="emacs"
 
 # Always enable colored `grep` output

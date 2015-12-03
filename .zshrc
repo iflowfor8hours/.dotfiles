@@ -60,9 +60,6 @@ source $ZSH/oh-my-zsh.sh
 # function definition is read
 autoload -U zmv
 
-# Only load Liquid Prompt in interactive shells, not from a script or from scp.
-# Since this is already in .zshrc, it should only ever be read by interactive
-# shells.
 if [[ -r ~/liquidprompt/liquidprompt ]]; then
     source ~/liquidprompt/liquidprompt
 fi
@@ -78,3 +75,11 @@ alias dirsizeall="du --human-readable --max-depth=1 | sort --human-numeric-sort 
 
 # Complement `whoami`
 alias whereami="uname -n"
+
+if [[ -r ~/.zshrc_local ]]; then
+    source ~/.zshrc_local
+fi
+
+# Get rid of those pesky duplicates in PATH
+typeset -U path
+export PATH

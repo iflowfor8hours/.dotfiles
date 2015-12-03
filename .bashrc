@@ -40,6 +40,11 @@ export HISTCONTROL=ignoreboth
 # http://www.gnu.org/software/bash/manual/html_node/The-Shopt-Builtin.html
 shopt -s histappend checkwinsize nocaseglob cdspell autocd globstar &> /dev/null
 
+# Only load Liquid Prompt in interactive shells, not from a script or from scp
+if [[ $- = *i* && -r ~/liquidprompt/liquidprompt ]]; then
+    source ~/liquidprompt/liquidprompt
+fi
+
 if [ -r "${HOME}/.profile" ]; then
     source "${HOME}/.profile"
 fi

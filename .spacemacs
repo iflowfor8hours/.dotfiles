@@ -245,6 +245,9 @@ layers configuration. You are free to put any user code."
 
   (setq dang-journal-directory "~/Dropbox/Journal")
 
+  ;; Unbind the right ⌥ (Option) key for easier typing of spiffy characters.
+  (setq mac-right-option-modifier nil)
+
   ;; Deft
   (setq deft-directory "~/notes")
   (setq deft-use-filename-as-title t)

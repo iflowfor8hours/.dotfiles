@@ -7,9 +7,6 @@ source_if_possible()
     fi
 }
 
-# Source global definitions if they exist
-source_if_possible /etc/bashrc
-
 # Easier navigation: .., ..., ...., ....., ~ and -
 alias ..="cd .."
 alias ...="cd ../.."

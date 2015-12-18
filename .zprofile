@@ -5,9 +5,9 @@ source_if_possible()
     fi
 }
 
+source_if_possible "${HOME}/.zprofile_local"
+
 # Prevent duplicate entries in `PATH`. zsh has already implicitly tied (typeset
 # -T) `path` and `PATH` together.
 typeset -U path
 export PATH
-
-source_if_possible "${HOME}/.zprofile_local"

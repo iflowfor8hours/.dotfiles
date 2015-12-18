@@ -1,9 +1,14 @@
 # .bashrc
 
+source_if_possible()
+{
+    if [[ -r $1 ]]; then
+        source $1
+    fi
+}
+
 # Source global definitions if they exist
-if [ -r /etc/bashrc ]; then
-    source /etc/bashrc
-fi
+source_if_possible /etc/bashrc
 
 # Easier navigation: .., ..., ...., ....., ~ and -
 alias ..="cd .."
@@ -41,14 +46,8 @@ export HISTCONTROL=ignoreboth
 shopt -s histappend checkwinsize nocaseglob cdspell autocd globstar &> /dev/null
 
 # Only load Liquid Prompt in interactive shells, not from a script or from scp
-if [[ $- = *i* && -r ~/liquidprompt/liquidprompt ]]; then
-    source ~/liquidprompt/liquidprompt
+if [[ $- = *i* ]]; then
+    source_if_possible "${HOME}/liquidprompt/liquidprompt"
 fi
 
-if [ -r "${HOME}/.profile" ]; then
-    source "${HOME}/.profile"
-fi
-
-if [ -r "${HOME}/.profile_local" ]; then
-    source "${HOME}/.profile_local"
-fi
+source_if_possible "${HOME}/.bashrc_local"

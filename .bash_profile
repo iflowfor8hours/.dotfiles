@@ -11,6 +11,13 @@
 # * http://www.gnu.org/software/bash/manual/bashref.html#Bash-Startup-Files
 # * http://www.joshstaiger.org/archives/2005/07/bash_profile_vs.html
 
-if [ -r "${HOME}/.bashrc" ]; then
-    source "${HOME}/.bashrc"
-fi
+source_if_possible()
+{
+    if [[ -r $1 ]]; then
+        source $1
+    fi
+}
+
+source_if_possible "${HOME}/.bash_profile_local"
+
+source_if_possible "${HOME}/.bashrc"

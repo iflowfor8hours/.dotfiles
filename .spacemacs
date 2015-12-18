@@ -33,7 +33,7 @@ values."
      org
      osx
      pandoc
-     python
+     (python :variables python-test-runner 'pytest)
      shell
      spell-checking
      syntax-checking
@@ -236,6 +236,12 @@ user code."
     (expand-file-name (concat
                        dang-journal-directory
                        (format-time-string "/%Y-%m-%d.markdown"))))
+
+  ;; Completely abort everything related to TRAMP
+  (defun dang-nuke-tramp ()
+    (interactive)
+    (tramp-cleanup-all-buffers)
+    (tramp-cleanup-all-connections))
   )
 
 (defun dotspacemacs/user-config ()
@@ -260,6 +266,9 @@ layers configuration. You are free to put any user code."
   (setq org-default-notes-file (concat org-directory "/¶ Notes.org"))
   (define-key global-map (kbd "C-c c") 'org-capture)
   (evil-leader/set-key "oc" 'org-capture)
+
+  ;; Python
+  (setq python-fill-docstring-style 'django)
   )
 
 ;; Do not write anything past this comment. This is where Emacs will

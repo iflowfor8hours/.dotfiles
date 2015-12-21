@@ -13,6 +13,8 @@ export ZSH="${HOME}/.oh-my-zsh"
 # is loaded.
 ZSH_THEME=""
 
+plugins=(aws)
+
 # User configuration
 
 source $ZSH/oh-my-zsh.sh

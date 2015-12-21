@@ -43,7 +43,10 @@ values."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages then consider to create a layer, you can also put the
    ;; configuration in `dotspacemacs/config'.
-   dotspacemacs-additional-packages '()
+   dotspacemacs-additional-packages
+   '(
+     multiple-cursors
+     )
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '()
    ;; If non-nil spacemacs will delete any orphan packages, i.e. packages that
@@ -197,10 +200,10 @@ It is called immediately after `dotspacemacs/init'.  You are free to put any
 user code."
   ;; The Anaconda binaries are not on PATH by default, because Homebrew
   ;; complains about them. (Needs to come after exec-path-from-shell.)
-  (let ((anaconda-path (concat (getenv "HOME") "/anaconda/bin")))
-    (setenv "PATH" (concat anaconda-path ":" (getenv "PATH")))
-    (setq exec-path (append (list anaconda-path) exec-path))
-    )
+  ;; (let ((anaconda-path (concat (getenv "HOME") "/anaconda/bin")))
+  ;;   (setenv "PATH" (concat anaconda-path ":" (getenv "PATH")))
+  ;;   (setq exec-path (append (list anaconda-path) exec-path))
+  ;;   )
 
   ;; Explain how to comment and uncomment lines to Emacs
   (defun dang-comment-or-uncomment-region-or-line ()
@@ -253,6 +256,16 @@ layers configuration. You are free to put any user code."
 
   ;; Unbind the right ⌥ (Option) key for easier typing of spiffy characters.
   (setq mac-right-option-modifier nil)
+
+  ;; Put expand region somewhere easy
+  (global-set-key (kbd "C-'") #'er/expand-region)
+
+  ;; Multiple cursors
+  (global-set-key (kbd "C-M-?") #'mc/mark-all-dwim)
+  (global-set-key (kbd "C->")   #'mc/mark-next-like-this)
+  (global-set-key (kbd "C-M->") #'mc/unmark-next-like-this)
+  (global-set-key (kbd "C-<")   #'mc/mark-previous-like-this)
+  (global-set-key (kbd "C-M-<") #'mc/unmark-previous-like-this)
 
   ;; Deft
   (setq deft-directory "~/notes")

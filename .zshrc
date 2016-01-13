@@ -13,8 +13,6 @@ export ZSH="${HOME}/.oh-my-zsh"
 # is loaded.
 ZSH_THEME=""
 
-plugins=(aws)
-
 # User configuration
 
 source $ZSH/oh-my-zsh.sh
@@ -25,7 +23,7 @@ autoload -U zmv
 
 source_if_possible ~/liquidprompt/liquidprompt
 
-export EDITOR="emacs"
+export EDITOR=edit
 
 # Always enable colored `grep` output
 export GREP_OPTIONS="--color=auto"

@@ -1,0 +1,36 @@
+#!/usr/bin/env sh
+
+# The stupid editing script.
+
+# Command line flags for `emacsclient` are explained at
+# http://www.gnu.org/software/emacs/manual/html_node/emacs/emacsclient-Options.html
+
+# Why is this an independent script?
+
+# In an ideal world, we would write
+#
+#     export ALTERNATE_EDITOR=""
+#     export EDITOR="emacsclient -c"
+#
+# in our shell's rc file. In Bash this work fine, but zsh does not split
+# variables into words when passed to a command, so zsh ends up looking for an
+# executable named 'emacsclient -c'. A clever way around that would be to use
+# zsh's array syntax,
+#
+#     EDITOR=(emacsclient -c)
+#     export EDITOR
+#
+# which does exactly what you want when you actually type that out at the shell
+# prompt. However, you cannot export arrays, so this fails when used in shell
+# startup files. Hence, the stupid editing script, yet another dependency that
+# you must ensure is on your path, to accommodate a shell that is generally
+# better, but sometimes incredibly freaking worse, than Bash.
+
+# References:
+#
+# http://zsh.sourceforge.net/Guide/zshguide02.html
+# http://stackoverflow.com/questions/18268083/setting-environment-variable-in-zsh-gives-number-expected
+# http://stackoverflow.com/questions/8299610/zsh-command-not-found-for-editor/34756647#34756647
+# http://zsh.sourceforge.net/FAQ/zshfaq03.html
+
+emacsclient -c --alternate-editor='' "$@"

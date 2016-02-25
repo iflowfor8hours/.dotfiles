@@ -15,7 +15,7 @@ ZSH_THEME=""
 
 # User configuration
 
-source $ZSH/oh-my-zsh.sh
+source_if_possible $ZSH/oh-my-zsh.sh
 
 # Equivalent to `typeset -fuU zmv`; `-U` suppresses alias expansion when the
 # function definition is read

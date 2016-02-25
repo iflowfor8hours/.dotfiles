@@ -24,7 +24,7 @@ values."
      ;; <M-m f e R> (Emacs style) to install them.
      ;; ----------------------------------------------------------------
      auto-completion
-     ;; better-defaults
+     clojure
      deft
      emacs-lisp
      git
@@ -282,6 +282,9 @@ layers configuration. You are free to put any user code."
 
   ;; Python
   (setq python-fill-docstring-style 'django)
+
+  ;; Clojure
+  (setq clojure-enable-fancify-symbols t)
   )
 
 ;; Do not write anything past this comment. This is where Emacs will

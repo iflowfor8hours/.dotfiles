@@ -34,7 +34,9 @@ values."
      osx
      pandoc
      (python :variables python-test-runner 'pytest)
-     shell
+     (shell :variables
+            shell-default-shell 'term
+            shell-default-term-shell "/bin/zsh")
      spell-checking
      syntax-checking
      version-control

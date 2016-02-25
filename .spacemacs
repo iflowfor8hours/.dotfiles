@@ -206,7 +206,7 @@ user code."
   ;;   )
 
   ;; Explain how to comment and uncomment lines to Emacs
-  (defun dang-comment-or-uncomment-region-or-line ()
+  (defun dang/comment-or-uncomment-region-or-line ()
     "Comments or uncomments the region or the current line if there's no active region."
     (interactive)
     (let (beg end)
@@ -214,34 +214,34 @@ user code."
           (setq beg (region-beginning) end (region-end))
         (setq beg (line-beginning-position) end (line-end-position)))
       (comment-or-uncomment-region beg end)))
-  (global-set-key (kbd "s-/") 'dang-comment-or-uncomment-region-or-line)
+  (global-set-key (kbd "s-/") 'dang/comment-or-uncomment-region-or-line)
 
   ;; Explain how to un-wrap lines to Emacs
-  (defun dang-unfill-paragraph (&optional region)
+  (defun dang/unfill-paragraph (&optional region)
     "Takes a multi-line paragraph and make it into a single line of text."
     (interactive (progn (barf-if-buffer-read-only) '(t)))
     (let ((fill-column (point-max)))
       (fill-paragraph nil region)))
-  (define-key global-map "\M-Q" 'dang-unfill-paragraph)
+  (define-key global-map "\M-Q" 'dang/unfill-paragraph)
 
   ;; Explain how to scroll by single lines to Emacs
-  (defun dang-scroll-up-one-line ()
+  (defun dang/scroll-up-one-line ()
     (interactive)
     (scroll-down 1))
-  (defun dang-scroll-down-one-line ()
+  (defun dang/scroll-down-one-line ()
     (interactive)
     (scroll-up 1))
-  (global-set-key [(meta p)] 'dang-scroll-up-one-line)
-  (global-set-key [(meta n)] 'dang-scroll-down-one-line)
+  (global-set-key [(meta p)] 'dang/scroll-up-one-line)
+  (global-set-key [(meta n)] 'dang/scroll-down-one-line)
 
-  (defun dang-journal-file ()
+  (defun dang/journal-file ()
     "Give the absolute path to today's journal file."
     (expand-file-name (concat
-                       dang-journal-directory
+                       dang/journal-directory
                        (format-time-string "/%Y-%m-%d.markdown"))))
 
   ;; Completely abort everything related to TRAMP
-  (defun dang-nuke-tramp ()
+  (defun dang/nuke-tramp ()
     (interactive)
     (tramp-cleanup-all-buffers)
     (tramp-cleanup-all-connections))
@@ -252,7 +252,7 @@ user code."
 This function is called at the very end of Spacemacs initialization after
 layers configuration. You are free to put any user code."
 
-  (setq dang-journal-directory "~/Dropbox/Journal")
+  (setq dang/journal-directory "~/Dropbox/Journal")
 
   ;; Unbind the right ⌥ (Option) key for easier typing of spiffy characters.
   (setq mac-right-option-modifier nil)

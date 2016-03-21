@@ -15,18 +15,19 @@ ZSH_THEME=""
 
 # User configuration
 
-source_if_possible $ZSH/oh-my-zsh.sh
+source_if_possible "$ZSH/oh-my-zsh.sh"
 
 # Equivalent to `typeset -fuU zmv`; `-U` suppresses alias expansion when the
 # function definition is read
 autoload -U zmv
 
-source_if_possible ~/liquidprompt/liquidprompt
+# Some machines I work on have the `sensors` program that LP checks for but no
+# sensors modules installed, leading to an annoying message that's repeated
+# before every prompt. Also I don't care about the machine's temperature.
+export LP_ENABLE_TEMP=0
+source_if_possible "$HOME/liquidprompt/liquidprompt"
 
 export EDITOR=edit
-
-# Always enable colored `grep` output
-export GREP_OPTIONS="--color=auto"
 
 # Get a sorted list of subfolder sizes, as long as `sort` supports the `-h` option
 alias dirsize="du --human-readable --max-depth=1 --exclude='./.*' | sort --human-numeric-sort --reverse"

@@ -40,6 +40,7 @@ values."
      spell-checking
      syntax-checking
      version-control
+     yaml
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -242,17 +243,28 @@ user code."
                        dang/journal-directory
                        (format-time-string "/%Y-%m-%d.markdown"))))
 
-  ;; Completely abort everything related to TRAMP
   (defun dang/nuke-tramp ()
+    "Completely abort everything related to TRAMP."
     (interactive)
     (tramp-cleanup-all-buffers)
     (tramp-cleanup-all-connections))
+
+  (defun dang/toggle-adaptive-wrap-prefix-mode-off ()
+    "Disable adaptive-wrap-prefix-mode. This exists just to provide a named function for use in mode hooks."
+    (interactive)
+    (adaptive-wrap-prefix-mode 0))
   )
 
 (defun dotspacemacs/user-config ()
   "Configuration function for user code.
 This function is called at the very end of Spacemacs initialization after
 layers configuration. You are free to put any user code."
+
+  ;; Spacemacs toggles
+  (spacemacs/toggle-vi-tilde-fringe-off)
+  (add-hook 'text-mode-hook 'spacemacs/toggle-visual-line-navigation-on)
+
+  (evil-leader/set-key "ot" 'tramp-cleanup-all-connections)
 
   (setq dang/journal-directory "~/Dropbox/Journal")
 
@@ -277,6 +289,16 @@ layers configuration. You are free to put any user code."
   (setq deft-org-mode-title-prefix t)
 
   ;; Org
+
+  ;; adaptive-wrap-prefix-mode and org-indent-mode seem to conflict. When
+  ;; org-mode starts, we want visual-line-mode enabled (satisfied above through
+  ;; text-mode-hook), adaptive-wrap-prefix-mode disabled (we toggle it here
+  ;; because it's on by default (Spacemacs?)), and org-indent-mode enabled (it
+  ;; is by default).
+  (add-hook 'org-mode-hook 'dang/toggle-adaptive-wrap-prefix-mode-off)
+
+  ;; By default org-mode will set the value of truncate-lines
+  (setq org-startup-truncated nil)
   (setq org-directory "~/org")
   (setq org-default-notes-file (concat org-directory "/¶ Notes.org"))
   (define-key global-map (kbd "C-c c") 'org-capture)

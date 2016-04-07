@@ -260,6 +260,14 @@ user code."
 This function is called at the very end of Spacemacs initialization after
 layers configuration. You are free to put any user code."
 
+  ;; Why, Emacs, why?!?
+  (setq initial-frame-alist
+        `((top . 0)
+          (left . 0)
+          (width . 90)
+          (height . 1000))
+        )
+
   ;; Spacemacs toggles
   (spacemacs/toggle-vi-tilde-fringe-off)
   (add-hook 'text-mode-hook 'spacemacs/toggle-visual-line-navigation-on)

@@ -269,7 +269,9 @@ layers configuration. You are free to put any user code."
         )
 
   ;; Spacemacs toggles
-  (spacemacs/toggle-vi-tilde-fringe-off)
+  ;; The fringe toggle isn't defined if there's no window system?
+  (if (fboundp 'spacemacs/toggle-vi-tilde-fringe-off)
+      (spacemacs/toggle-vi-tilde-fringe-off))
   (add-hook 'text-mode-hook 'spacemacs/toggle-visual-line-navigation-on)
 
   (evil-leader/set-key "ot" 'tramp-cleanup-all-connections)

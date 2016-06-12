@@ -208,6 +208,17 @@ user code."
   ;;   (setq exec-path (append (list anaconda-path) exec-path))
   ;;   )
 
+  ;; Why, Emacs, why?!?
+  (setq initial-frame-alist
+        `((top . 0)
+          (left . 0)
+          (width . 90)
+          (height . 1000))
+        )
+
+  ;; Put the mc lists file somewhere that Spacemacs ignores
+  (setq mc/list-file "~/.emacs.d/.cache/mc-lists.el")
+
   ;; Explain how to comment and uncomment lines to Emacs
   (defun dang/comment-or-uncomment-region-or-line ()
     "Comments or uncomments the region or the current line if there's no active region."
@@ -260,14 +271,6 @@ user code."
 This function is called at the very end of Spacemacs initialization after
 layers configuration. You are free to put any user code."
 
-  ;; Why, Emacs, why?!?
-  (setq initial-frame-alist
-        `((top . 0)
-          (left . 0)
-          (width . 90)
-          (height . 1000))
-        )
-
   ;; Spacemacs toggles
   ;; The fringe toggle isn't defined if there's no window system?
   (if (fboundp 'spacemacs/toggle-vi-tilde-fringe-off)
@@ -290,6 +293,7 @@ layers configuration. You are free to put any user code."
   (global-set-key (kbd "C-M->") #'mc/unmark-next-like-this)
   (global-set-key (kbd "C-<")   #'mc/mark-previous-like-this)
   (global-set-key (kbd "C-M-<") #'mc/unmark-previous-like-this)
+  (global-set-key (kbd "s-<mouse-1>") 'mc/add-cursor-on-click)
 
   ;; Deft
   (setq deft-directory "~/notes")

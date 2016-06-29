@@ -23,37 +23,129 @@ function abspath() {
     fi
 }
 
-# Path to your oh-my-zsh installation.
-export ZSH="${HOME}/.oh-my-zsh"
+# Directories
+# ===========
 
-# Set name of the theme to load. Look in ~/.oh-my-zsh/themes/. Optionally, if
-# you set this to "random", it'll load a random theme each time that oh-my-zsh
-# is loaded.
-ZSH_THEME=""
+setopt auto_cd
+setopt auto_pushd
+setopt pushd_ignore_dups
+setopt pushdminus
 
-# User configuration
+alias -g ...='../..'
+alias -g ....='../../..'
+alias -g .....='../../../..'
+alias -g ......='../../../../..'
 
-source_if_possible "$ZSH/oh-my-zsh.sh"
+alias -- -='cd -'
+alias 1='cd -'
+alias 2='cd -2'
+alias 3='cd -3'
+alias 4='cd -4'
+alias 5='cd -5'
+alias 6='cd -6'
+alias 7='cd -7'
+alias 8='cd -8'
+alias 9='cd -9'
 
-# Equivalent to `typeset -fuU zmv`; `-U` suppresses alias expansion when the
-# function definition is read
-autoload -U zmv
+alias md='mkdir -p'
+alias rd=rmdir
+alias d='dirs -v | head -10'
+
+# Look for a GNU version of ls
+if $(gls --color -d . &> /dev/null); then
+    eval $(gdircolors)
+    alias ls="gls --color=auto"
+elif $(ls --color -d . &> /dev/null); then
+    eval $(dircolors)
+    alias ls="ls --color=auto"
+else
+    alias ls="ls -G"
+fi
+
+alias lsa="ls --almost-all"
+alias ll="ls -l --human-readable"
+alias la="ls -l --almost-all --human-readable"
+
+# Push and pop directories on directory stack
+alias pu='pushd'
+alias po='popd'
+
+# Get a sorted list of subfolder sizes
+if hash gsort 2> /dev/null; then
+    alias du="gdu"
+    alias sort="gsort"
+fi
+alias dirsize="du --human-readable --max-depth=1 --exclude='./.*' | sort --human-numeric-sort --reverse"
+alias dirsizeall="du --human-readable --max-depth=1 | sort --human-numeric-sort --reverse"
+
+
+# Autocorrect
+# ===========
+
+alias man='nocorrect man'
+alias mkdir='nocorrect mkdir'
+alias mv='nocorrect mv'
+alias mysql='nocorrect mysql'
+alias sudo='nocorrect sudo'
+
+setopt correct_all
+
+
+# History
+# =======
+
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=10000
+SAVEHIST=10000
+
+setopt append_history
+setopt extended_history
+setopt hist_expire_dups_first
+setopt hist_ignore_dups # ignore duplication command history list
+setopt hist_ignore_space
+setopt hist_verify
+setopt inc_append_history
+setopt share_history # share command history data
+
+
+# Prompt
+# ======
+
+# Loads support for setting colors?
+autoload -U colors && colors
+
+# If set, parameter expansion, command substitution and arithmetic expansion are
+# performed in prompts. Substitutions within prompts do not affect the command
+# status.
+setopt prompt_subst
 
 # Some machines I work on have the `sensors` program that LP checks for but no
 # sensors modules installed, leading to an annoying message that's repeated
 # before every prompt. Also I don't care about the machine's temperature.
 export LP_ENABLE_TEMP=0
-source_if_possible "$HOME/liquidprompt/liquidprompt"
+source_if_possible "/usr/local/opt/liquidprompt/share/liquidprompt"
+
+
+# Other
+# =====
+
+# Perform implicit tees or cats when multiple redirections are attempted (see
+# the section 'Redirection').
+setopt multios
+
+# Equivalent to `typeset -fuU zmv`; `-U` suppresses alias expansion when the
+# function definition is read
+autoload -U zmv
 
 export EDITOR=edit
 
 alias glog="git log --oneline --decorate --graph"
 
-# Get a sorted list of subfolder sizes, as long as `sort` supports the `-h` option
-alias dirsize="du --human-readable --max-depth=1 --exclude='./.*' | sort --human-numeric-sort --reverse"
-alias dirsizeall="du --human-readable --max-depth=1 | sort --human-numeric-sort --reverse"
-
 # Complement `whoami`
 alias whereami="uname -n"
+
+
+# Local settings
+# ==============
 
 source_if_possible ~/.zshrc_local

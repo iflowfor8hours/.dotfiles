@@ -119,12 +119,6 @@ autoload -U colors && colors
 # status.
 setopt prompt_subst
 
-# Some machines I work on have the `sensors` program that LP checks for but no
-# sensors modules installed, leading to an annoying message that's repeated
-# before every prompt. Also I don't care about the machine's temperature.
-export LP_ENABLE_TEMP=0
-source_if_possible "/usr/local/opt/liquidprompt/share/liquidprompt"
-
 
 # Other
 # =====

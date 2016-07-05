@@ -29,12 +29,14 @@ values."
      emacs-lisp
      git
      html
+     javascript
      latex
      markdown
      org
      osx
      pandoc
      (python :variables python-test-runner 'pytest)
+     racket
      (shell :variables
             shell-default-shell 'term
             shell-default-term-shell "/bin/zsh")
@@ -295,6 +297,15 @@ layers configuration. You are free to put any user code."
   (global-set-key (kbd "C-<")   #'mc/mark-previous-like-this)
   (global-set-key (kbd "C-M-<") #'mc/unmark-previous-like-this)
   (global-set-key (kbd "s-<mouse-1>") 'mc/add-cursor-on-click)
+
+  ;; Paredit everywhere (to see if I like it)
+  (global-set-key (kbd "C-M-u") #'paredit-backward-up)
+  (global-set-key (kbd "C-M-n") #'paredit-forward-up)
+  (global-set-key "\M-S" #'paredit-splice-sexp-killing-backward)
+  (global-set-key "\M-R" #'paredit-raise-sexp)
+  (global-set-key "\M-(" #'paredit-wrap-round)
+  (global-set-key "\M-[" #'paredit-wrap-square)
+  (global-set-key "\M-{" #'paredit-wrap-curly)
 
   ;; Deft
   (setq deft-directory "~/notes")

@@ -52,7 +52,7 @@ alias rd=rmdir
 alias d='dirs -v | head -10'
 
 # Look for a GNU version of ls
-if $(gls --color -d . &> /dev/null); then
+if hash gls 2> /dev/null; then
     eval $(gdircolors)
     alias ls="gls --color=auto"
 elif $(ls --color -d . &> /dev/null); then
@@ -106,6 +106,13 @@ setopt hist_ignore_space
 setopt hist_verify
 setopt inc_append_history
 setopt share_history # share command history data
+
+autoload -U up-line-or-beginning-search
+zle -N up-line-or-beginning-search
+bindkey "^[[A" up-line-or-beginning-search
+autoload -U down-line-or-beginning-search
+zle -N down-line-or-beginning-search
+bindkey "^[[B" down-line-or-beginning-search
 
 
 # Prompt

@@ -25,6 +25,29 @@ function abspath() {
     fi
 }
 
+
+# GNU Coreutils
+# =============
+
+# If GNU coreutils are installed, we'd like those to be available for
+# interactive use. These binaries are installed by Homebrew into /usr/local/bin
+# under names prefixed by 'g', so we get 'gls', 'gmkdir', and so on. There is
+# another directory that contains non-prefixed versions of each of these
+# binaries as well, and adding it to the path is one way to go. However,
+# sometimes build tools complain about non-prefixed coreutils on PATH, so this
+# aliasing method is a different way to tackle it.
+
+# There was some sort of issue with using an alias with '['.
+if hash brew && [[ -d $(brew --prefix)/opt/coreutils/libexec/gnubin ]]; then
+    for cmd in $( ls $(brew --prefix)/opt/coreutils/libexec/gnubin ); do
+        alias "${cmd}"="g${cmd}"
+    done
+    unalias "["
+    alias ls="gls --color=auto"
+else
+    alias ls="ls --color=auto"
+fi
+
 # Directories
 # ===========
 
@@ -53,17 +76,6 @@ alias md='mkdir -p'
 alias rd=rmdir
 alias d='dirs -v | head -10'
 
-# Look for a GNU version of ls
-if hash gls 2> /dev/null; then
-    eval $(gdircolors)
-    alias ls="gls --color=auto"
-elif $(ls --color -d . &> /dev/null); then
-    eval $(dircolors)
-    alias ls="ls --color=auto"
-else
-    alias ls="ls -G"
-fi
-
 alias lsa="ls --almost-all"
 alias ll="ls -l --human-readable"
 alias la="ls -l --almost-all --human-readable"
@@ -72,31 +84,72 @@ alias la="ls -l --almost-all --human-readable"
 alias pu='pushd'
 alias po='popd'
 
-# Get a sorted list of subfolder sizes
-if hash gsort 2> /dev/null; then
-    alias du="gdu"
-    alias sort="gsort"
-fi
 alias dirsize="du --human-readable --max-depth=1 --exclude='./.*' | sort --human-numeric-sort --reverse"
 alias dirsizeall="du --human-readable --max-depth=1 | sort --human-numeric-sort --reverse"
 
 
-# Autocorrect
-# ===========
+# Completion
+# ==========
 
-alias man='nocorrect man'
-alias mkdir='nocorrect mkdir'
-alias mv='nocorrect mv'
-alias mysql='nocorrect mysql'
-alias sudo='nocorrect sudo'
+autoload -U compaudit compinit
 
-setopt correct_all
+# Copied verbatim from
+# https://github.com/robbyrussell/oh-my-zsh/blob/master/lib/completion.zsh
+
+unsetopt menu_complete   # do not autoselect the first completion entry
+unsetopt flowcontrol
+setopt auto_menu         # show completion menu on succesive tab press
+setopt complete_in_word
+setopt always_to_end
+
+WORDCHARS=''
+
+zmodload -i zsh/complist
+
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=*' 'l:|=* r:|=*'
+
+zstyle ':completion:*' list-colors ''
+
+# should this be in keybindings?
+bindkey -M menuselect '^o' accept-and-infer-next-history
+
+zstyle ':completion:*:*:*:*:*' menu select
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#) ([0-9a-z-]#)*=01;34=0=01'
+zstyle ':completion:*:*:*:*:processes' command "ps -u $USER -o pid,user,comm -w -w"
+
+# disable named-directories autocompletion
+zstyle ':completion:*:cd:*' tag-order local-directories directory-stack path-directories
+
+# Use caching so that commands like apt and dpkg complete are useable
+zstyle ':completion::complete:*' use-cache 1
+zstyle ':completion::complete:*' cache-path $ZSH_CACHE_DIR
+
+# Don't complete uninteresting users
+zstyle ':completion:*:*:*:users' ignored-patterns \
+        adm amanda apache at avahi avahi-autoipd beaglidx bin cacti canna \
+        clamav daemon dbus distcache dnsmasq dovecot fax ftp games gdm \
+        gkrellmd gopher hacluster haldaemon halt hsqldb ident junkbust kdm \
+        ldap lp mail mailman mailnull man messagebus  mldonkey mysql nagios \
+        named netdump news nfsnobody nobody nscd ntp nut nx obsrun openvpn \
+        operator pcap polkitd postfix postgres privoxy pulse pvm quagga radvd \
+        rpc rpcuser rpm rtkit scard shutdown squid sshd statd svn sync tftp \
+        usbmux uucp vcsa wwwrun xfs '_*'
+
+# ... unless we really want to.
+zstyle '*' single-ignored show
+
+# Save the location of the current completion dump file.
+if [[ -z "$ZSH_COMPDUMP" ]]; then
+    ZSH_COMPDUMP="${ZSH_CACHE_DIR:-${HOME}}/.zcompdump-${HOST}-${ZSH_VERSION}"
+fi
+
+compinit -i -d "${ZSH_COMPDUMP}"
 
 
 # History
 # =======
 
-HISTFILE="$HOME/.zsh_history"
+HISTFILE="${HOME}/.zsh_history"
 HISTSIZE=10000
 SAVEHIST=10000
 

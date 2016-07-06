@@ -38,7 +38,7 @@ function abspath() {
 # aliasing method is a different way to tackle it.
 
 # There was some sort of issue with using an alias with '['.
-if hash brew && [[ -d $(brew --prefix)/opt/coreutils/libexec/gnubin ]]; then
+if hash brew 2> /dev/null && [[ -d $(brew --prefix)/opt/coreutils/libexec/gnubin ]]; then
     for cmd in $( ls $(brew --prefix)/opt/coreutils/libexec/gnubin ); do
         alias "${cmd}"="g${cmd}"
     done

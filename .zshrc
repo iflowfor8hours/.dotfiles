@@ -1,4 +1,6 @@
-source_if_possible()
+ZSH_CACHE_DIR="${HOME}/.cache"
+
+function source_if_possible()
 {
     if [[ -r $1 ]]; then
         source $1
@@ -10,10 +12,10 @@ function abspath() {
     # $1     : relative filename
     # return : absolute path
     # From http://stackoverflow.com/a/23002317/514210
-    if [ -d "$1" ]; then
+    if [[ -d "$1" ]]; then
         # dir
         (cd "$1"; pwd)
-    elif [ -f "$1" ]; then
+    elif [[ -f "$1" ]]; then
         # file
         if [[ $1 == */* ]]; then
             echo "$(cd "${1%/*}"; pwd)/${1##*/}"

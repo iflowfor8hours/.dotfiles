@@ -49,7 +49,10 @@ values."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '()
+   dotspacemacs-additional-packages
+   '(
+     multiple-cursors
+     )
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '()
    ;; If non-nil spacemacs will delete any orphan packages, i.e. packages that
@@ -249,13 +252,15 @@ values."
   for variables that need to be set before packages are loaded.
   If you are unsure, you should try in setting them in
   `dotspacemacs/user-config' first."
+  )
 
-  ;; The Anaconda binaries are not on PATH by default, because Homebrew
-  ;; complains about them. (Needs to come after exec-path-from-shell.)
-  ;; (let ((anaconda-path (concat (getenv "HOME") "/anaconda/bin")))
-  ;;   (setenv "PATH" (concat anaconda-path ":" (getenv "PATH")))
-  ;;   (setq exec-path (append (list anaconda-path) exec-path))
-  ;;   )
+(defun dotspacemacs/user-config ()
+  "Configuration function for user code.
+This function is called at the very end of Spacemacs
+initialization after layers configuration. This is the place
+where most of your configurations should be done. Unless it is
+explicitly specified that a variable should be set before a
+package is loaded, you should place your code here."
 
   ;; Why, Emacs, why?!?
   (setq initial-frame-alist
@@ -297,12 +302,6 @@ values."
   (global-set-key [(meta p)] 'dang/scroll-up-one-line)
   (global-set-key [(meta n)] 'dang/scroll-down-one-line)
 
-  (defun dang/journal-file ()
-    "Give the absolute path to today's journal file."
-    (expand-file-name (concat
-                       dang/journal-directory
-                       (format-time-string "/%Y-%m-%d.markdown"))))
-
   (defun dang/nuke-tramp ()
     "Completely abort everything related to TRAMP."
     (interactive)
@@ -313,15 +312,6 @@ values."
     "Disable adaptive-wrap-prefix-mode. This exists just to provide a named function for use in mode hooks."
     (interactive)
     (adaptive-wrap-prefix-mode 0))
-  )
-
-(defun dotspacemacs/user-config ()
-  "Configuration function for user code.
-This function is called at the very end of Spacemacs
-initialization after layers configuration. This is the place
-where most of your configurations should be done. Unless it is
-explicitly specified that a variable should be set before a
-package is loaded, you should place your code here."
 
   ;; Spacemacs toggles
   ;; The fringe toggle isn't defined if there's no window system?
@@ -330,8 +320,6 @@ package is loaded, you should place your code here."
   (add-hook 'text-mode-hook 'spacemacs/toggle-visual-line-navigation-on)
 
   (evil-leader/set-key "ot" 'tramp-cleanup-all-connections)
-
-  (setq dang/journal-directory "~/Dropbox/Journal")
 
   ;; Unbind the right ⌥ (Option) key for easier typing of spiffy characters.
   (setq mac-right-option-modifier nil)
@@ -353,7 +341,8 @@ package is loaded, you should place your code here."
   (global-set-key "\M-S" #'paredit-splice-sexp-killing-backward)
   (global-set-key "\M-R" #'paredit-raise-sexp)
   (global-set-key "\M-(" #'paredit-wrap-round)
-  (global-set-key "\M-[" #'paredit-wrap-square)
+  ;; Uncommenting this line results in emacsclient not working correctly
+  ;; (global-set-key "\M-[" #'paredit-wrap-square)
   (global-set-key "\M-{" #'paredit-wrap-curly)
 
   ;; Deft

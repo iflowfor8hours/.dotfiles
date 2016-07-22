@@ -1,31 +1,5 @@
 ZSH_CACHE_DIR="${HOME}/.cache"
 
-function source_if_possible()
-{
-    if [[ -r $1 ]]; then
-        source $1
-    fi
-}
-
-function abspath() {
-    # generate absolute path from relative path
-    # $1     : relative filename
-    # return : absolute path
-    # From http://stackoverflow.com/a/23002317/514210
-    if [[ -d "$1" ]]; then
-        # dir
-        (cd "$1"; pwd)
-    elif [[ -f "$1" ]]; then
-        # file
-        if [[ $1 == */* ]]; then
-            echo "$(cd "${1%/*}"; pwd)/${1##*/}"
-        else
-            echo "$(pwd)/$1"
-        fi
-    fi
-}
-
-
 # GNU Coreutils
 # =============
 
@@ -47,6 +21,7 @@ if hash brew 2> /dev/null && [[ -d $(brew --prefix)/opt/coreutils/libexec/gnubin
 else
     alias ls="ls --color=auto"
 fi
+
 
 # Directories
 # ===========
@@ -204,8 +179,6 @@ alias whereami="uname -n"
 # zplug
 # =====
 
-source "$HOME/.zplug/init.zsh"
-
 zplug "zplug/zplug"
 zplug "DGrady/8a53dd33bacd7eff2e4c42d43b489469", from:gist # abspath
 zplug "DGrady/b083a6046fb2ae5b94221bc068dd081f", from:gist # source_if_possible
@@ -231,4 +204,4 @@ zplug load --verbose
 # Local settings
 # ==============
 
-source_if_possible ~/.zshrc_local
+source_if_possible "$HOME/.local_zshrc"

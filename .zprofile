@@ -5,9 +5,7 @@ source_if_possible()
     fi
 }
 
-source_if_possible "${HOME}/.zprofile_local"
+# Source zplug's init script here to avoid changing PATH and FPATH the rc file
+source "$HOME/.zplug/init.zsh"
 
-# Prevent duplicate entries in `PATH`. zsh has already implicitly tied (typeset
-# -T) `path` and `PATH` together.
-typeset -U path
-export PATH
+source_if_possible "${HOME}/.local_zprofile"

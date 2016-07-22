@@ -1,8 +1,3 @@
-if [[ $TERM == dumb ]]; then
-    # If this is Tramp, then do nothing!
-    return
-fi
-
 ZSH_CACHE_DIR="${HOME}/.cache"
 
 function source_if_possible()

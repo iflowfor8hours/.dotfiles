@@ -201,6 +201,33 @@ alias glog="git log --oneline --decorate --graph"
 alias whereami="uname -n"
 
 
+# zplug
+# =====
+
+source "$HOME/.zplug/init.zsh"
+
+zplug "zplug/zplug"
+zplug "DGrady/8a53dd33bacd7eff2e4c42d43b489469", from:gist # abspath
+zplug "DGrady/b083a6046fb2ae5b94221bc068dd081f", from:gist # source_if_possible
+zplug "nojhan/liquidprompt"
+zplug "zsh-users/zsh-completions"
+zplug "zsh-users/zsh-autosuggestions"
+zplug "zsh-users/zaw"
+zplug "clvv/fasd", use:"fasd", hook-load:'eval "$(fasd --init auto)"'
+
+# Install packages that have not been installed yet
+if ! zplug check --verbose; then
+    printf "Install? [y/N]: "
+    if read -q; then
+        echo; zplug install
+    else
+        echo
+    fi
+fi
+
+zplug load --verbose
+
+
 # Local settings
 # ==============
 

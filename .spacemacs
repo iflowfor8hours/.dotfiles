@@ -373,6 +373,9 @@ package is loaded, you should place your code here."
 
   ;; Clojure
   (setq clojure-enable-fancify-symbols t)
+
+  ;; JavaScript
+  (setq json-encoding-default-indentation "	")
   )
 
 ;; Do not write anything past this comment. This is where Emacs will

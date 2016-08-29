@@ -168,26 +168,21 @@ alias whereami="uname -n"
 # zplug
 # =====
 
-zplug "zplug/zplug"
-zplug "DGrady/8a53dd33bacd7eff2e4c42d43b489469", from:gist # abspath
-zplug "DGrady/b083a6046fb2ae5b94221bc068dd081f", from:gist # source_if_possible
-zplug "nojhan/liquidprompt"
-zplug "zsh-users/zsh-completions"
-zplug "zsh-users/zsh-autosuggestions"
-zplug "zsh-users/zaw"
-zplug "clvv/fasd", use:"fasd", hook-load:'eval "$(fasd --init auto)"'
+if whence zplug &> /dev/null; then
+    zplug "DGrady/8a53dd33bacd7eff2e4c42d43b489469", from:gist # abspath
+    zplug "DGrady/b083a6046fb2ae5b94221bc068dd081f", from:gist # source_if_possible
+    zplug "nojhan/liquidprompt"
+    zplug "zsh-users/zsh-completions"
+    zplug "zsh-users/zsh-autosuggestions"
+    zplug "zsh-users/zaw"
+    zplug "clvv/fasd", use:"fasd"
 
-# Install packages that have not been installed yet
-if ! zplug check --verbose; then
-    printf "Install? [y/N]: "
-    if read -q; then
-        echo; zplug install
-    else
-        echo
-    fi
+    zplug load
 fi
 
-zplug load --verbose
+# We *should* be able to use zplug's hook-load for this, but for reasons unknown
+# it doesn't work
+whence fasd &> /dev/null && eval "$(fasd --init auto)"
 
 
 # Local settings

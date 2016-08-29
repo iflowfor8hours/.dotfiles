@@ -109,13 +109,6 @@ zstyle ':completion:*:*:*:users' ignored-patterns \
 # ... unless we really want to.
 zstyle '*' single-ignored show
 
-# Save the location of the current completion dump file.
-if [[ -z "$ZSH_COMPDUMP" ]]; then
-    ZSH_COMPDUMP="${ZSH_CACHE_DIR:-${HOME}}/.zcompdump-${HOST}-${ZSH_VERSION}"
-fi
-
-compinit -i -d "${ZSH_COMPDUMP}"
-
 
 # History
 # =======

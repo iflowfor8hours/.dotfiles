@@ -37,6 +37,7 @@ values."
      pandoc
      (python :variables python-test-runner 'pytest)
      racket
+     scala
      (shell :variables
             shell-default-shell 'term
             shell-default-term-shell "/bin/zsh")
@@ -52,6 +53,7 @@ values."
    dotspacemacs-additional-packages
    '(
      multiple-cursors
+     intero
      )
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '()
@@ -119,7 +121,7 @@ values."
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
    ;; size to make separators look not too crappy.
    dotspacemacs-default-font '("Source Code Pro"
-                               :size 10
+                               :size 12
                                :weight normal
                                :width normal
                                :powerline-scale 1.1)
@@ -376,6 +378,9 @@ package is loaded, you should place your code here."
 
   ;; JavaScript
   (setq json-encoding-default-indentation "	")
+
+  ;; Haskell
+  (add-hook 'haskell-mode-hook 'intero-mode)
   )
 
 ;; Do not write anything past this comment. This is where Emacs will

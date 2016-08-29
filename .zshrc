@@ -1,4 +1,5 @@
-ZSH_CACHE_DIR="${HOME}/.cache"
+ZSH_CACHE_DIR="$HOME/.cache"
+
 
 # GNU Coreutils
 # =============
@@ -12,13 +13,13 @@ ZSH_CACHE_DIR="${HOME}/.cache"
 # aliasing method is a different way to tackle it.
 
 # There was some sort of issue with using an alias with '['.
-if hash brew 2> /dev/null && [[ -d $(brew --prefix)/opt/coreutils/libexec/gnubin ]]; then
+if whence brew &> /dev/null && [[ -d $(brew --prefix)/opt/coreutils/libexec/gnubin ]]; then
     for cmd in $( ls $(brew --prefix)/opt/coreutils/libexec/gnubin ); do
         alias "${cmd}"="g${cmd}"
     done
     unalias "["
     alias ls="gls --color=auto"
-else
+elif ls --color=auto /dev/null &> /dev/null; then
     alias ls="ls --color=auto"
 fi
 

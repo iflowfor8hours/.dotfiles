@@ -1,0 +1,15 @@
+[submodule "zsh_plugins/liquidprompt"]
+	path = zsh_plugins/liquidprompt
+	url = https://github.com/nojhan/liquidprompt.git
+[submodule "zsh_plugins/fasd"]
+	path = zsh_plugins/fasd
+	url = https://github.com/clvv/fasd.git
+[submodule "zsh_plugins/zsh-completions"]
+	path = zsh_plugins/zsh-completions
+	url = https://github.com/zsh-users/zsh-completions.git
+[submodule "zsh_plugins/zsh-autosuggestions"]
+	path = zsh_plugins/zsh-autosuggestions
+	url = https://github.com/zsh-users/zsh-autosuggestions.git
+[submodule "zsh_plugins/zaw"]
+	path = zsh_plugins/zaw
+	url = https://github.com/zsh-users/zaw.git

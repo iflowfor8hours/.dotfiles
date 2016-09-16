@@ -1,4 +1,53 @@
-ZSH_CACHE_DIR="$HOME/.cache"
+export ZSH_CACHE_DIR="$HOME/.cache/zsh"
+
+
+# Functions
+# =========
+
+function source_if_possible()
+{
+    if [[ -r $1 ]]; then
+        source $1
+    fi
+}
+
+function abspath() {
+    # generate absolute path from relative path
+    # $1     : relative filename
+    # return : absolute path
+    # From http://stackoverflow.com/a/23002317/514210
+    if [[ -d "$1" ]]; then
+        # dir
+        (cd "$1"; pwd)
+    elif [[ -f "$1" ]]; then
+        # file
+        if [[ $1 == */* ]]; then
+            echo "$(cd "${1%/*}"; pwd)/${1##*/}"
+        else
+            echo "$(pwd)/$1"
+        fi
+    fi
+}
+
+function eexists() {
+    # Test if there's a command with the given name
+    whence "$1" &> /dev/null
+}
+
+
+# Plugins
+# =======
+
+source_if_possible "$HOME/.dotfiles/zsh_plugins/liquidprompt/liquidprompt"
+
+source_if_possible "$HOME/.dotfiles/zsh_plugins/fasd/fasd"
+eexists fasd && eval "$(fasd --init auto)"
+
+source_if_possible "$HOME/.dotfiles/zsh_plugins/zaw/zaw.zsh"
+
+source_if_possible "$HOME/.dotfiles/zsh_plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
+
+fpath+="$HOME/.dotfiles/zsh_plugins/zsh-completions/src"
 
 
 # GNU Coreutils
@@ -13,7 +62,7 @@ ZSH_CACHE_DIR="$HOME/.cache"
 # aliasing method is a different way to tackle it.
 
 # There was some sort of issue with using an alias with '['.
-if whence brew &> /dev/null && [[ -d $(brew --prefix)/opt/coreutils/libexec/gnubin ]]; then
+if eexists brew && [[ -d $(brew --prefix)/opt/coreutils/libexec/gnubin ]]; then
     for cmd in $( ls $(brew --prefix)/opt/coreutils/libexec/gnubin ); do
         alias "${cmd}"="g${cmd}"
     done
@@ -109,11 +158,13 @@ zstyle ':completion:*:*:*:users' ignored-patterns \
 # ... unless we really want to.
 zstyle '*' single-ignored show
 
+compinit
+
 
 # History
 # =======
 
-HISTFILE="${HOME}/.zsh_history"
+HISTFILE="$HOME/.zsh_history"
 HISTSIZE=10000
 SAVEHIST=10000
 
@@ -161,28 +212,7 @@ export EDITOR=edit
 
 alias glog="git log --oneline --decorate --graph"
 
-# Complement `whoami`
-alias whereami="uname -n"
-
-
-# zplug
-# =====
-
-if whence zplug &> /dev/null; then
-    zplug "DGrady/8a53dd33bacd7eff2e4c42d43b489469", from:gist # abspath
-    zplug "DGrady/b083a6046fb2ae5b94221bc068dd081f", from:gist # source_if_possible
-    zplug "nojhan/liquidprompt"
-    zplug "zsh-users/zsh-completions"
-    zplug "zsh-users/zsh-autosuggestions"
-    zplug "zsh-users/zaw"
-    zplug "clvv/fasd", use:"fasd"
-
-    zplug load
-fi
-
-# We *should* be able to use zplug's hook-load for this, but for reasons unknown
-# it doesn't work
-whence fasd &> /dev/null && eval "$(fasd --init auto)"
+alias wr="whence -v"
 
 
 # Local settings

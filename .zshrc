@@ -111,7 +111,7 @@ alias dirsizeall="du --human-readable --max-depth=1 | sort --human-numeric-sort 
 # Completion
 # ==========
 
-autoload -U compaudit compinit
+autoload -U compinit
 
 # Copied verbatim from
 # https://github.com/robbyrussell/oh-my-zsh/blob/master/lib/completion.zsh
@@ -183,18 +183,6 @@ bindkey "^[[A" up-line-or-beginning-search
 autoload -U down-line-or-beginning-search
 zle -N down-line-or-beginning-search
 bindkey "^[[B" down-line-or-beginning-search
-
-
-# Prompt
-# ======
-
-# Loads support for setting colors?
-autoload -U colors && colors
-
-# If set, parameter expansion, command substitution and arithmetic expansion are
-# performed in prompts. Substitutions within prompts do not affect the command
-# status.
-setopt prompt_subst
 
 
 # Other

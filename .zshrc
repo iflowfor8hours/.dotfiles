@@ -103,6 +103,7 @@ alias rd=rmdir
 alias lsa="ls --almost-all"
 alias ll="ls -l --human-readable"
 alias la="ls -l --almost-all --human-readable"
+alias lst="tree -phugDC"
 
 alias dirsize="du --human-readable --max-depth=1 --exclude='./.*' | sort --human-numeric-sort --reverse"
 alias dirsizeall="du --human-readable --max-depth=1 | sort --human-numeric-sort --reverse"

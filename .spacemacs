@@ -37,21 +37,12 @@ values."
      ;; <M-m f e R> (Emacs style) to install them.
      ;; ----------------------------------------------------------------
      (auto-completion :variables auto-completion-enable-snippets-in-popup t)
-     clojure
-     csv
-     deft
      emacs-lisp
      git
-     html
-     javascript
-     latex
      markdown
      org
      osx
-     pandoc
      (python :variables python-test-runner 'pytest)
-     racket
-     scala
      (shell :variables
             shell-default-shell 'term
             shell-default-term-shell "/bin/zsh")
@@ -396,24 +387,18 @@ package is loaded, you should place your code here."
   ;; (global-set-key "\M-[" #'paredit-wrap-square)
   (global-set-key "\M-{" #'paredit-wrap-curly)
 
-  ;; Deft
-  (setq deft-directory "~/notes")
-  (setq deft-use-filename-as-title t)
-  (setq deft-extensions '("org" "markdown" "mdown" "md" "txt" "text"))
-  (setq deft-markdown-mode-title-level 1)
-  (setq deft-org-mode-title-prefix t)
-
   ;; Org
 
   ;; adaptive-wrap-prefix-mode and org-indent-mode seem to conflict. When
   ;; org-mode starts, we want visual-line-mode enabled (satisfied above through
   ;; text-mode-hook), adaptive-wrap-prefix-mode disabled (we toggle it here
-  ;; because it's on by default (Spacemacs?)), and org-indent-mode enabled (it
-  ;; is by default).
+  ;; because it's on by default (Spacemacs?)), and org-indent-mode enabled (it's
+  ;; off by default?).
   (add-hook 'org-mode-hook 'dang/toggle-adaptive-wrap-prefix-mode-off)
+  (add-hook 'org-mode-hook 'org-indent-mode)
 
   ;; By default org-mode will set the value of truncate-lines
-  (setq org-startup-truncated nil)
+  ;; (setq org-startup-truncated nil)
   (setq org-directory "~/org")
   (setq org-default-notes-file (concat org-directory "/¶ Notes.org"))
   (define-key global-map (kbd "C-c c") 'org-capture)
@@ -421,24 +406,6 @@ package is loaded, you should place your code here."
 
   ;; Python
   (setq python-fill-docstring-style 'django)
-
-  ;; Clojure
-  (setq clojure-enable-fancify-symbols t)
-
-  ;; JavaScript
-  (setq json-encoding-default-indentation "	")
+  ;; (add-to-list 'python-shell-completion-native-disabled-interpreters "ipython")
+  ;; (setq 'python-shell-interpreter-args "-i")
   )
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (auto-complete iedit git-gutter hide-comnt auctex anzu undo-tree flyspell-correct async ht dash csv-mode which-key web-mode toc-org spaceline sass-mode pug-mode persp-mode org-plus-contrib js2-refactor hl-todo helm-projectile helm-company helm-ag evil-unimpaired diff-hl company-tern clojure-snippets clj-refactor cider clojure-mode anaconda-mode sbt-mode smartparens flycheck yasnippet helm helm-core projectile magit magit-popup git-commit with-editor js2-mode yapfify yaml-mode xterm-color ws-butler window-numbering web-beautify volatile-highlights vi-tilde-fringe uuidgen use-package tern tagedit spacemacs-theme smeargle slim-mode shell-pop scss-mode reveal-in-osx-finder restart-emacs rainbow-delimiters racket-mode queue quelpa pyvenv pytest pyenv-mode py-isort powerline popwin pkg-info pip-requirements pcre2el pbcopy paredit paradox pandoc-mode ox-pandoc osx-trash osx-dictionary orgit org-projectile org-present org-pomodoro org-download org-bullets open-junk-file noflet neotree multiple-cursors multi-term move-text mmm-mode markdown-toc magit-gitflow macrostep lorem-ipsum livid-mode live-py-mode linum-relative link-hint less-css-mode launchctl json-mode js-doc jade-mode info+ inflections indent-guide ido-vertical-mode hy-mode hungry-delete htmlize highlight-parentheses highlight-numbers highlight-indentation help-fns+ helm-themes helm-swoop helm-pydoc helm-mode-manager helm-make helm-gitignore helm-flx helm-descbinds helm-css-scss helm-c-yasnippet haml-mode google-translate golden-ratio gnuplot gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe git-gutter-fringe+ gh-md flyspell-correct-helm flycheck-pos-tip flx-ido fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-magit evil-lisp-state evil-indent-plus evil-iedit-state evil-exchange evil-escape evil-ediff evil-args evil-anzu eshell-z eshell-prompt-extras esh-help ensime emmet-mode elisp-slime-nav edn dumb-jump deft dash-functional cython-mode company-web company-statistics company-auctex company-anaconda column-enforce-mode coffee-mode clean-aindent-mode cider-eval-sexp-fu auto-yasnippet auto-highlight-symbol auto-dictionary auto-compile aggressive-indent adaptive-wrap ace-window ace-link ace-jump-helm-line ac-ispell))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )

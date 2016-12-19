@@ -75,29 +75,31 @@
   :bind ("C-x C-b" . ibuffer))
 
 (use-package ivy
-  ;; counsel and swiper are installed as dependencies
-  
   ;; Force loading. Ivy automatically binds, for example, C-x b, but
   ;; won't do so until the package is loaded. We'd like these to be
   ;; available immediately.
   :demand t
   :diminish (ivy-mode . " ❦")
-  :bind (("C-s" . swiper)
-	 ("M-x" . counsel-M-x)
-	 ("C-x C-f" . counsel-find-file)
-	 ("<f1> b" . counsel-descbinds)
-	 ("<f1> f" . counsel-describe-function)
-	 ("<f1> v" . counsel-describe-variable)
-	 ("<f1> l" . counsel-load-library)
-	 ("<f2> i" . counsel-info-lookup-symbol)
-	 ("<f2> u" . counsel-unicode-char)
-	 ("C-c k" . counsel-ag))
   :config
   (ivy-mode 1)
   ;; add ‘recentf-mode’ and bookmarks to ‘ivy-switch-buffer’, and show
   ;; their full pathnames.
   (setq ivy-use-virtual-buffers t)
-  (setq ivy-virtual-abbreviate 'full))
+  (setq ivy-virtual-abbreviate 'full)
+
+  (use-package counsel
+    :bind (("M-x" . counsel-M-x)
+	   ("C-x C-f" . counsel-find-file)
+	   ("<f1> b" . counsel-descbinds)
+	   ("<f1> f" . counsel-describe-function)
+	   ("<f1> v" . counsel-describe-variable)
+	   ("<f1> l" . counsel-load-library)
+	   ("<f2> i" . counsel-info-lookup-symbol)
+	   ("<f2> u" . counsel-unicode-char)
+	   ("C-c k" . counsel-ag)))
+
+  (use-package swiper
+    :bind ("C-s" . swiper)))
 
 (use-package magit
   :bind ("C-c g" . magit-status))
@@ -169,6 +171,7 @@
   :commands (sml/setup))
 
 (use-package solarized-theme
+  :if (display-graphic-p)
   :config
   (load-theme 'solarized-dark)
   (sml/setup))

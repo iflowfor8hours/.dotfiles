@@ -21,6 +21,7 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+(unless (display-graphic-p) (menu-bar-mode -1))
 (setq initial-frame-alist
       `((top . 0)
 	(left . 0)

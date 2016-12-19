@@ -20,7 +20,7 @@
 
 (fset 'yes-or-no-p 'y-or-n-p)
 
-(scroll-bar-mode -1)
+(when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 (setq initial-frame-alist
       `((top . 0)
 	(left . 0)

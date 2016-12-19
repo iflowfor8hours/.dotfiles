@@ -248,8 +248,8 @@
 
 (defhydra hydra-window (:hint nil)
    "
-_h_  ←  _j_  ↓  _k_  ↑  _l_  →  _a_ce window
-_q_ |←  _w_ -↓  _e_ -↑  _r_ |→  _b_alance
+_h_ ←   _j_ ↓  _k_ ↑  _l_ →   _a_ce window
+_q_ →←  _w_ ↕  _e_ ⇅  _r_ ←→  _b_alance
 
 _v_ertical  horizon_t_al
 _d_elete  _D_elete other  _o_nly  _O_nly other
@@ -275,10 +275,10 @@ _SPC_ cancel"
        )
 
    ;; Change window size
-   ("q" hydra-move-splitter-left)
-   ("w" hydra-move-splitter-down)
-   ("e" hydra-move-splitter-up)
-   ("r" hydra-move-splitter-right)
+   ("q" shrink-window-horizontally)
+   ("w" enlarge-window)
+   ("e" (lambda () (interactive) (enlarge-window -1)))
+   ("r" enlarge-window-horizontally)
    ("b" balance-windows)
 
    ;; Create new windows

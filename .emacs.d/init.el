@@ -9,17 +9,6 @@
 
 ;;; Basics
 
-(setq custom-file "~/.emacs.d/custom.el")
-(if (file-readable-p custom-file)
-    (load custom-file))
-
-(setq backup-directory-alist '(("." . "~/.emacs.d/backups")))
-
-(setq user-full-name "Daniel Grady"
-      user-mail-address "danielgrady@danielgrady.info")
-
-(fset 'yes-or-no-p 'y-or-n-p)
-
 (when (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 (unless (display-graphic-p) (menu-bar-mode -1))
 (setq initial-frame-alist
@@ -28,6 +17,22 @@
 	(width . 100)
 	(height . 1000))
       )
+
+(fset 'yes-or-no-p 'y-or-n-p)
+(setq user-full-name "Daniel Grady"
+      user-mail-address "danielgrady@danielgrady.info"
+      apropos-do-all t
+      require-final-newline t
+      visible-bell t
+      load-prefer-newer t
+      custom-file (concat user-emacs-directory "custom.el")
+      backup-directory-alist `(("." . ,(concat user-emacs-directory "backups"))))
+
+(if (file-readable-p custom-file)
+    (load custom-file))
+
+
+;;; Load packages
 
 ;; Bootstrap use-package
 (require 'package)
@@ -39,9 +44,6 @@
   (package-install 'use-package))
 (require 'use-package)
 (setq use-package-always-ensure t)
-
-
-;;; Load packages
 
 ;; TODO Projectile, Perspective, Purpose, Origami
 
@@ -69,11 +71,22 @@
 (use-package expand-region
   :bind ("C-'" . er/expand-region))
 
+(use-package hippie-exp
+  :bind ("M-/" . hippie-expand))
+
 (use-package hydra
   :commands defhydra)
 
 (use-package ibuffer
   :bind ("C-x C-b" . ibuffer))
+
+(use-package "isearch" ; giving name as string works around the lack of (provide ...)
+  :ensure nil
+  ;; swiper gets C-s
+  :bind (("s-f" . isearch-forward-regexp)
+	 ("C-r" . isearch-backward-regexp)
+	 ("M-C-s" . isearch-forward)
+	 ("M-C-r" . isearch-backward)))
 
 (use-package ivy
   ;; Force loading. Ivy automatically binds, for example, C-x b, but
@@ -112,6 +125,10 @@
 	 ("\\.markdown\\'" . markdown-mode)
 	 ("\\.mdown\\'" . markdown-mode))
   :config (setq markdown-command "multimarkdown"))
+
+(use-package misc
+  :ensure nil
+  :bind ("M-z" . zap-up-to-char))
 
 ;; Maybe also look in to phi-search?
 (use-package multiple-cursors
@@ -168,6 +185,11 @@
 (use-package reveal-in-osx-finder
   :if (dang/system-is-mac))
 
+(use-package saveplace
+  :config
+  (setq save-place-file (concat user-emacs-directory "places"))
+  (setq-default save-place t))
+
 (use-package smart-mode-line
   :commands (sml/setup))
 
@@ -184,6 +206,10 @@
     (global-undo-tree-mode)
     (setq undo-tree-visualizer-timestamps t)
     (setq undo-tree-visualizer-diff t)))
+
+(use-package uniquify
+  :ensure nil
+  :config (setq uniquify-buffer-name-style 'forward))
 
 (use-package which-key
   :diminish " ‽"

@@ -102,6 +102,12 @@
   (setq ivy-virtual-abbreviate 'full)
 
   (use-package counsel
+    :init
+    ;; Apparently if smex is available, then counsel-M-x will use it
+    ;; instead of regular command, which gives you recent items at the
+    ;; top and maybe other nice things
+    (use-package smex)
+
     :bind (("M-x" . counsel-M-x)
 	   ("C-x C-f" . counsel-find-file)
 	   ("<f1> b" . counsel-descbinds)
@@ -111,6 +117,9 @@
 	   ("<f2> i" . counsel-info-lookup-symbol)
 	   ("<f2> u" . counsel-unicode-char)
 	   ("C-c k" . counsel-ag)))
+
+  ;; Provides the hydra that ivy automatically binds to C-o
+  (use-package ivy-hydra)
 
   (use-package swiper
     :bind ("C-s" . swiper)))
@@ -180,7 +189,7 @@
 ;;   :init (add-hook 'emacs-lisp-mode-hook #'parinfer-mode))
 
 (use-package recentf
-  :init (recentf-mode 1))
+  :config (recentf-mode 1))
 
 (use-package reveal-in-osx-finder
   :if (dang/system-is-mac))
@@ -188,16 +197,10 @@
 (use-package saveplace
   :config
   (setq save-place-file (concat user-emacs-directory "places"))
-  (setq-default save-place t))
+  (save-place-mode 1))
 
 (use-package smart-mode-line
-  :commands (sml/setup))
-
-(use-package solarized-theme
-  :if (display-graphic-p)
-  :config
-  (load-theme 'solarized-dark)
-  (sml/setup))
+  :config (sml/setup))
 
 (use-package undo-tree
   :diminish undo-tree-mode

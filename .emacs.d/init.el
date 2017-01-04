@@ -105,7 +105,11 @@
     :init
     ;; Apparently if smex is available, then counsel-M-x will use it
     ;; instead of regular command, which gives you recent items at the
-    ;; top and maybe other nice things
+    ;; top and maybe other nice things. I'm not sure why I have to set
+    ;; the save file manually. If I don't, on my work laptop, Smex
+    ;; always saves to `~/.smex-items' even though it should default
+    ;; to `~/.emacs.d/smex-items'
+    (setq smex-save-file (locate-user-emacs-file "smex-items"))
     (use-package smex)
 
     ;; All interactive functions that match `counsel-\w`
@@ -122,7 +126,7 @@
 	   ;; ("" . counsel-esh-history)
 	   ;; ("" . counsel-expression-history)
 	   ("C-x C-f" . counsel-find-file)
-	   ("" . counsel-find-symbol)
+	   ;; ("" . counsel-find-symbol)
 	   ("C-c t" . counsel-git)
 	   ("C-c j" . counsel-git-grep)
 	   ;; ("" . counsel-git-grep-query-replace)
@@ -136,8 +140,8 @@
 	   ("<f1> S" . counsel-info-lookup-symbol)
 	   ;; ("" . counsel-jedi)
 	   ;; ("" . counsel-linux-app)
-	   ("" . counsel-list-processes)
-	   ("<f1> l" . counsel-load-library)
+	   ;; ("" . counsel-list-processes)
+	   ;; ("<f1> l" . counsel-load-library)
 	   ;; ("" . counsel-load-theme)
 	   ("C-c l" . counsel-locate)
 	   ;; ("" . counsel-mode)
@@ -151,7 +155,8 @@
 	   ("<f2> u" . counsel-unicode-char)
 	   ;; ("" . counsel-up-directory)
 	   ("M-y" . counsel-yank-pop)
-	   ))
+	   )
+    )
 
   ;; Provides the hydra that ivy automatically binds to C-o
   (use-package ivy-hydra)
@@ -188,6 +193,7 @@
   :bind (("C-c c" . org-capture))
   :config
   (setq org-default-notes-files "~/org/¶ Notes.org")
+  (setq org-log-done 'time)
   (add-hook 'org-mode-hook 'dang/org-mode-hook))
 
 (use-package org-journal

@@ -258,51 +258,6 @@
   :config (winner-mode 1))
 
 
-;;; Helper functions
-
-(defun dang/org-mode-hook ()
-  "Set up line wrapping and indentation for org-mode just the way I like it."
-  (adaptive-wrap-prefix-mode 0)
-  (visual-line-mode 1)
-  (org-indent-mode 1))
-
-;; Explain how to comment and uncomment lines to Emacs
-(defun dang/comment-or-uncomment-region-or-line ()
-  "Comments or uncomments the region or the current line if there's no active region."
-  (interactive)
-  (let (beg end)
-    (if (region-active-p)
-	(setq beg (region-beginning) end (region-end))
-      (setq beg (line-beginning-position) end (line-end-position)))
-    (comment-or-uncomment-region beg end)))
-
-;; Explain how to un-wrap lines to Emacs
-(defun dang/unfill-paragraph (&optional region)
-  "Takes a multi-line paragraph and make it into a single line of text."
-  (interactive (progn (barf-if-buffer-read-only) '(t)))
-  (let ((fill-column (point-max)))
-    (fill-paragraph nil region)))
-
-;; Explain how to scroll by single lines to Emacs
-(defun dang/scroll-up-one-line ()
-  (interactive)
-  (scroll-down 1))
-(defun dang/scroll-down-one-line ()
-  (interactive)
-  (scroll-up 1))
-
-
-;;; Non-package-related keybindings
-
-(global-set-key (kbd "M-Q") 'dang/unfill-paragraph)
-(global-set-key (kbd "s-/") 'dang/comment-or-uncomment-region-or-line)
-(global-set-key (kbd "M-p") 'dang/scroll-up-one-line)
-(global-set-key (kbd "M-n") 'dang/scroll-down-one-line)
-(when (dang/system-is-mac)
-  ;; Bug? Emacs doesn't see C-s-f
-  (global-set-key (kbd "<C-s-268632070>") 'toggle-frame-fullscreen))
-
-
 ;;; Hydras
 
 (defhydra hydra-zoom (global-map "<f2>")
@@ -423,6 +378,55 @@ _d_: subtree
   ("z" nil "leave"))
 
 (global-set-key (kbd "C-c #") 'hydra-outline/body) ; by example
+
+
+;;; Helper functions
+
+(defun dang/org-mode-hook ()
+  "Set up line wrapping and indentation for org-mode just the way I like it."
+  (adaptive-wrap-prefix-mode 0)
+  (visual-line-mode 1)
+  (org-indent-mode 1))
+
+;; Explain how to comment and uncomment lines to Emacs
+(defun dang/comment-or-uncomment-region-or-line ()
+  "Comments or uncomments the region or the current line if there's no active region."
+  (interactive)
+  (let (beg end)
+    (if (region-active-p)
+	(setq beg (region-beginning) end (region-end))
+      (setq beg (line-beginning-position) end (line-end-position)))
+    (comment-or-uncomment-region beg end)))
+
+;; Explain how to un-wrap lines to Emacs
+(defun dang/unfill-paragraph (&optional region)
+  "Takes a multi-line paragraph and make it into a single line of text."
+  (interactive (progn (barf-if-buffer-read-only) '(t)))
+  (let ((fill-column (point-max)))
+    (fill-paragraph nil region)))
+
+;; Explain how to scroll by single lines to Emacs
+(defun dang/scroll-up-one-line ()
+  (interactive)
+  (scroll-down 1))
+(defun dang/scroll-down-one-line ()
+  (interactive)
+  (scroll-up 1))
+
+
+;;; Non-package-related keybindings
+
+(global-set-key (kbd "M-Q") 'dang/unfill-paragraph)
+(global-set-key (kbd "s-/") 'dang/comment-or-uncomment-region-or-line)
+(global-set-key (kbd "M-p") 'dang/scroll-up-one-line)
+(global-set-key (kbd "M-n") 'dang/scroll-down-one-line)
+(when (dang/system-is-mac)
+  ;; Bug? Emacs doesn't see C-s-f
+  (global-set-key (kbd "<C-s-268632070>") 'toggle-frame-fullscreen)
+  ;; Unbind the right ⌥ (Option) key for easier typing of spiffy characters.
+  (setq mac-right-option-modifier nil)
+  )
+
 
 ;; Local Variables:
 ;;   mode: emacs-lisp

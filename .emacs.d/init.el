@@ -61,10 +61,19 @@
   :commands (adaptive-wrap-prefix-mode)
   :init (add-hook 'text-mode-hook 'adaptive-wrap-prefix-mode))
 
+(use-package anaconda-mode
+  :diminish (anaconda-mode . " ⚕")
+  :commands (anaconda-mode anaconda-eldoc-mode)
+  :init
+  (add-hook 'python-mode-hook 'anaconda-mode)
+  (add-hook 'python-mode-hook 'anaconda-eldoc-mode))
+
 (use-package company
   :diminish " ɕ"
   :config
-  (add-hook 'prog-mode-hook 'company-mode))
+  (add-hook 'prog-mode-hook 'company-mode)
+  (use-package company-anaconda
+    :config (add-to-list 'company-backends 'company-anaconda)))
 
 (use-package exec-path-from-shell
   :if (and (dang/system-is-mac) (display-graphic-p))

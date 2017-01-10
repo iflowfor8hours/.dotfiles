@@ -245,6 +245,11 @@
 ;;   :bind ("C-," . parinfer-toggle-mode)
 ;;   :init (add-hook 'emacs-lisp-mode-hook #'parinfer-mode))
 
+(use-package python
+  :config
+  (setq python-shell-interpreter "ipython"
+	python-shell-interpreter-args "--simple-prompt"))
+
 (use-package recentf
   :config (recentf-mode 1))
 

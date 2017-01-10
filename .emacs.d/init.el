@@ -75,6 +75,10 @@
   (use-package company-anaconda
     :config (add-to-list 'company-backends 'company-anaconda)))
 
+(use-package eldoc
+  :defer t
+  :diminish (eldoc-mode . " λ?"))
+
 (use-package exec-path-from-shell
   :if (and (dang/system-is-mac) (display-graphic-p))
   :config

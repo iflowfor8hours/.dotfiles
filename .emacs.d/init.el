@@ -42,7 +42,10 @@
   (package-refresh-contents))
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
-(require 'use-package)
+(eval-when-compile
+  (require 'use-package))
+(require 'diminish)
+(require 'bind-key)
 (setq use-package-always-ensure t)
 
 ;; TODO Projectile, Perspective, Purpose, Origami

@@ -1,6 +1,7 @@
 ;;;; init --- d4ng's Emacs init.el
 ;;
 ;;;; Commentary:
+;;
 ;; This is an init file. There's not much to see
 ;;
 
@@ -32,25 +33,24 @@
     (load custom-file))
 
 
-;;; Load packages
+;;; Configure packages
 
-;; Bootstrap use-package
 (require 'package)
 (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
 (package-initialize)
+
 (unless package-archive-contents
   (package-refresh-contents))
 (unless (package-installed-p 'use-package)
   (package-install 'use-package))
+
 (eval-when-compile
-  (require 'use-package))
-(require 'diminish)
+  (require 'use-package)
+  (setq use-package-always-ensure t))
 (require 'bind-key)
-(setq use-package-always-ensure t)
+(require 'diminish)
 
-;; TODO Projectile, Perspective, Purpose, Origami
-
-(defun dang/system-is-mac () (eq system-type 'darwin))
+(defun dang/macOS-p () (eq system-type 'darwin))
 
 (use-package ace-window
   :bind ("C-x o" . ace-window)
@@ -75,12 +75,10 @@
   (use-package company-anaconda
     :config (add-to-list 'company-backends 'company-anaconda)))
 
-(use-package eldoc
-  :defer t
-  :diminish (eldoc-mode . " λ?"))
+(diminish 'eldoc-mode " λ?")
 
 (use-package exec-path-from-shell
-  :if (and (dang/system-is-mac) (display-graphic-p))
+  :if (and (dang/macOS-p) (display-graphic-p))
   :config
   (exec-path-from-shell-initialize))
 
@@ -152,7 +150,7 @@
 	   ("C-c s" . counsel-git-stash)
 	   ("C-c r" . counsel-grep)
 	   ("C-s" . counsel-grep-or-swiper)
-	   ("C-c m" . counsel-imenu)
+	   ("C-c u" . counsel-imenu)
 	   ("<f1> S" . counsel-info-lookup-symbol)
 	   ;; ("" . counsel-jedi)
 	   ;; ("" . counsel-linux-app)
@@ -195,7 +193,6 @@
   :ensure nil
   :bind ("M-z" . zap-up-to-char))
 
-;; Maybe also look in to phi-search?
 (use-package multiple-cursors
   :bind (("C->" . mc/mark-next-like-this)
 	 ("C-<" . mc/mark-previous-like-this)
@@ -210,6 +207,7 @@
   :config
   (setq org-default-notes-files "~/org/¶ Notes.org")
   (setq org-log-done 'time)
+  (setq org-use-speed-commands t)
   (add-hook 'org-mode-hook 'dang/org-mode-hook))
 
 (use-package org-journal
@@ -223,7 +221,7 @@
   :config (osx-clipboard-mode 1))
 
 (use-package osx-trash
-  :if (dang/system-is-mac)
+  :if (dang/macOS-p)
   :config
   (osx-trash-setup)
   (setq delete-by-moving-to-trash t))
@@ -240,11 +238,6 @@
   (add-hook 'scheme-mode-hook 'enable-paredit-mode)
   )
 
-;; (use-package parinfer
-;;   :commands parinfer-mode
-;;   :bind ("C-," . parinfer-toggle-mode)
-;;   :init (add-hook 'emacs-lisp-mode-hook #'parinfer-mode))
-
 (use-package python
   :config
   (setq python-shell-interpreter "ipython"
@@ -254,7 +247,7 @@
   :config (recentf-mode 1))
 
 (use-package reveal-in-osx-finder
-  :if (dang/system-is-mac))
+  :if (dang/macOS-p))
 
 (use-package saveplace
   :config
@@ -281,7 +274,6 @@
   :config (which-key-mode))
 
 (use-package winner
-  :demand t
   :config (winner-mode 1))
 
 
@@ -369,8 +361,6 @@ _SPC_ cancel"
    ("SPC" nil)
    )
 
-(global-set-key (kbd "C-c o") 'hydra-window/body)
-
 (defhydra hydra-outline (:color pink :hint nil)
   "
 ^Hide^             ^Show^           ^Move
@@ -404,7 +394,25 @@ _d_: subtree
   ("b" outline-backward-same-level)       ; Backward - same level
   ("z" nil "leave"))
 
-(global-set-key (kbd "C-c #") 'hydra-outline/body) ; by example
+(defhydra hydra-multiple-cursors (:hint nil)
+  "
+     ^Up^            ^Down^        ^Other^
+----------------------------------------------
+[_p_]   Next    [_n_]   Next    [_l_] Edit lines
+[_P_]   Skip    [_N_]   Skip    [_a_] Mark all
+[_M-p_] Unmark  [_M-n_] Unmark  [_r_] Mark by regexp
+^ ^             ^ ^             [_q_] Quit
+"
+  ("l" mc/edit-lines :exit t)
+  ("a" mc/mark-all-like-this :exit t)
+  ("n" mc/mark-next-like-this)
+  ("N" mc/skip-to-next-like-this)
+  ("M-n" mc/unmark-next-like-this)
+  ("p" mc/mark-previous-like-this)
+  ("P" mc/skip-to-previous-like-this)
+  ("M-p" mc/unmark-previous-like-this)
+  ("r" mc/mark-all-in-region-regexp :exit t)
+  ("q" nil))
 
 
 ;;; Helper functions
@@ -443,17 +451,20 @@ _d_: subtree
 
 ;;; Non-package-related keybindings
 
-(global-set-key (kbd "M-Q") 'dang/unfill-paragraph)
-(global-set-key (kbd "s-/") 'dang/comment-or-uncomment-region-or-line)
-(global-set-key (kbd "M-p") 'dang/scroll-up-one-line)
-(global-set-key (kbd "M-n") 'dang/scroll-down-one-line)
-(when (dang/system-is-mac)
+(bind-key "M-Q" 'dang/unfill-paragraph)
+(bind-key "s-/" 'dang/comment-or-uncomment-region-or-line)
+(bind-key "C-/" 'dang/comment-or-uncomment-region-or-line)
+(bind-key "M-p" 'dang/scroll-up-one-line)
+(bind-key "M-n" 'dang/scroll-down-one-line)
+(when (dang/macOS-p)
   ;; Bug? Emacs doesn't see C-s-f
-  (global-set-key (kbd "<C-s-268632070>") 'toggle-frame-fullscreen)
+  (bind-key "<C-s-268632070>" 'toggle-frame-fullscreen)
   ;; Unbind the right ⌥ (Option) key for easier typing of spiffy characters.
   (setq mac-right-option-modifier nil)
   )
-
+(bind-key "C-c #" 'hydra-outline/body)
+(bind-key "C-c o" 'hydra-window/body)
+(bind-key "C-c m" 'hydra-multiple-cursors/body)
 
 ;; Local Variables:
 ;;   mode: emacs-lisp

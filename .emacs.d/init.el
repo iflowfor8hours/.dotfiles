@@ -269,6 +269,8 @@
   :ensure nil
   :config (setq uniquify-buffer-name-style 'forward))
 
+(diminish 'visual-line-mode " ↩")
+
 (use-package which-key
   :diminish " ‽"
   :config (which-key-mode))

@@ -47,8 +47,6 @@ source_if_possible "$HOME/.dotfiles/zsh_plugins/zaw/zaw.zsh"
 
 source_if_possible "$HOME/.dotfiles/zsh_plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
 
-fpath+="$HOME/.dotfiles/zsh_plugins/zsh-completions/src"
-
 
 # GNU Coreutils
 # =============
@@ -111,6 +109,9 @@ alias dirsizeall="du --human-readable --max-depth=1 | sort --human-numeric-sort 
 
 # Completion
 # ==========
+
+eexists brew && fpath=("$(brew --prefix)/share/zsh/site-functions" $fpath)
+fpath=("$HOME/.dotfiles/zsh_plugins/zsh-completions/src" $fpath)
 
 autoload -U compinit
 

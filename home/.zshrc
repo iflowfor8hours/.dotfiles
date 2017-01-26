@@ -198,7 +198,7 @@ setopt multios
 # function definition is read
 autoload -U zmv
 
-export EDITOR=edit
+export EDITOR=emacs
 
 alias glog="git log --oneline --decorate --graph"
 

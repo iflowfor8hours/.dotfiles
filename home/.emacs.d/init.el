@@ -107,7 +107,7 @@
   ;; won't do so until the package is loaded. We'd like these to be
   ;; available immediately.
   :demand t
-  :diminish (ivy-mode . " ❦")
+  :diminish " ❦"
   :config
   (ivy-mode 1)
   ;; add ‘recentf-mode’ and bookmarks to ‘ivy-switch-buffer’, and show
@@ -142,7 +142,7 @@
 	   ("C-x C-f" . counsel-find-file)
 	   ;; ("" . counsel-find-symbol)
 	   ("C-c t" . counsel-git)
-	   ("C-c j" . counsel-git-grep)
+	   ;; ("C-c j" . counsel-git-grep)
 	   ;; ("" . counsel-git-grep-query-replace)
 	   ;; ("" . counsel-git-grep-recenter)
 	   ;; ("" . counsel-git-grep-switch-cmd)
@@ -211,14 +211,13 @@
   (add-hook 'org-mode-hook 'dang/org-mode-hook))
 
 (use-package org-journal
-  ;; This is the default binding, but providing it will cause lazy
-  ;; loading.
-  :bind ("C-c C-j" . org-journal-new-entry))
+  :bind ("C-c j" . org-journal-new-entry))
 
 (use-package osx-clipboard
   ;; Terminal Emacs uses system clipboard on macOS. Does nothing if
   ;; enabled on other systems or in GUI Emacs.
-  :config (osx-clipboard-mode 1))
+  :config (osx-clipboard-mode 1)
+  :diminish " ✄ ")
 
 (use-package osx-trash
   :if (dang/macOS-p)
@@ -228,7 +227,7 @@
 
 (use-package paredit
   :commands (paredit-mode enable-paredit-mode)
-  :diminish (paredit-mode . " ⁽₎")
+  :diminish " ⁽₎"
   :init
   (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
   (add-hook 'eval-expression-minibuffer-setup-hook 'enable-paredit-mode)
@@ -423,6 +422,7 @@ _d_: subtree
   "Set up line wrapping and indentation for org-mode just the way I like it."
   (adaptive-wrap-prefix-mode 0)
   (visual-line-mode 1)
+  (diminish 'org-indent-mode " ⇥")
   (org-indent-mode 1))
 
 ;; Explain how to comment and uncomment lines to Emacs

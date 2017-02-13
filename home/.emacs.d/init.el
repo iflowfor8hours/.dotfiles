@@ -50,7 +50,9 @@
 (require 'bind-key)
 (require 'diminish)
 
-(defun dang/macOS-p () (eq system-type 'darwin))
+(defun dang/macOS-p ()
+  "Test whether Emacs is running on a Mac."
+  (eq system-type 'darwin))
 
 (use-package ace-window
   :bind ("C-x o" . ace-window)
@@ -346,7 +348,7 @@ _SPC_ cancel"
    ("o" delete-other-windows)
    ("O" ace-maximize-window)
 
-   ;; Change buffers   
+   ;; Change buffers
    ("f" (call-interactively (global-key-binding (kbd "C-x C-f"))))
    ("S" save-buffer)
    ("s" (lambda ()
@@ -378,18 +380,18 @@ _d_: subtree
 
 "
   ;; Hide
-  ("q" hide-sublevels)    ; Hide everything but the top-level headings
-  ("t" hide-body)         ; Hide everything but headings (all body lines)
-  ("o" hide-other)        ; Hide other branches
-  ("c" hide-entry)        ; Hide this entry's body
-  ("l" hide-leaves)       ; Hide body lines in this entry and sub-entries
-  ("d" hide-subtree)      ; Hide everything in this entry and sub-entries
+  ("q" outline-hide-sublevels)    ; Hide everything but the top-level headings
+  ("t" outline-hide-body)         ; Hide everything but headings (all body lines)
+  ("o" outline-hide-other)        ; Hide other branches
+  ("c" outline-hide-entry)        ; Hide this entry's body
+  ("l" outline-hide-leaves)       ; Hide body lines in this entry and sub-entries
+  ("d" outline-hide-subtree)      ; Hide everything in this entry and sub-entries
   ;; Show
-  ("a" show-all)          ; Show (expand) everything
-  ("e" show-entry)        ; Show this heading's body
-  ("i" show-children)     ; Show this heading's immediate child sub-headings
-  ("k" show-branches)     ; Show all sub-headings under this heading
-  ("s" show-subtree)      ; Show (expand) everything in this heading & below
+  ("a" outline-show-all)          ; Show (expand) everything
+  ("e" outline-show-entry)        ; Show this heading's body
+  ("i" outline-show-children)     ; Show this heading's immediate child sub-headings
+  ("k" outline-show-branches)     ; Show all sub-headings under this heading
+  ("s" outline-show-subtree)      ; Show (expand) everything in this heading & below
   ;; Move
   ("u" outline-up-heading)                ; Up
   ("n" outline-next-visible-heading)      ; Next
@@ -422,7 +424,7 @@ _d_: subtree
 ;;; Helper functions
 
 (defun dang/org-mode-hook ()
-  "Set up line wrapping and indentation for org-mode just the way I like it."
+  "Set up line wrapping and indentation for `org-mode' just the way I like it."
   (adaptive-wrap-prefix-mode 0)
   (visual-line-mode 1)
   (diminish 'org-indent-mode " ⇥")
@@ -440,16 +442,18 @@ _d_: subtree
 
 ;; Explain how to un-wrap lines to Emacs
 (defun dang/unfill-paragraph (&optional region)
-  "Takes a multi-line paragraph and make it into a single line of text."
+  "Un-wrap the current paragraph or REGION into a single line of text."
   (interactive (progn (barf-if-buffer-read-only) '(t)))
   (let ((fill-column (point-max)))
     (fill-paragraph nil region)))
 
 ;; Explain how to scroll by single lines to Emacs
 (defun dang/scroll-up-one-line ()
+  "Scroll the view up one line."
   (interactive)
   (scroll-down 1))
 (defun dang/scroll-down-one-line ()
+  "Scroll the view down one line."
   (interactive)
   (scroll-up 1))
 
@@ -474,3 +478,6 @@ _d_: subtree
 ;; Local Variables:
 ;;   mode: emacs-lisp
 ;; End:
+
+(provide 'init)
+;;; init.el ends here

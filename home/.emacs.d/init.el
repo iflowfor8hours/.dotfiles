@@ -88,7 +88,8 @@
   :bind ("C-'" . er/expand-region))
 
 (use-package flycheck
-  :init (global-flycheck-mode))
+  :init (global-flycheck-mode)
+  :diminish " ✓")
 
 (use-package hippie-exp
   :bind ("M-/" . hippie-expand))

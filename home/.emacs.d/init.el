@@ -22,12 +22,22 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 (setq user-full-name "Daniel Grady"
       user-mail-address "danielgrady@danielgrady.info"
-      apropos-do-all t
       require-final-newline t
       visible-bell t
       load-prefer-newer t
       custom-file (concat user-emacs-directory "custom.el")
       backup-directory-alist `(("." . ,(concat user-emacs-directory "backups"))))
+
+(defvar apropos-do-all t
+  "Search more things with `apropos' commands.
+
+If the variable `apropos-do-all' is non-nil, most apropos
+commands behave as if they had been given a prefix argument.
+There is one exception: `apropos-variable' without a prefix
+argument will always search for all variables, no matter what the
+value of `apropos-do-all' is.
+
+https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 
 (if (file-readable-p custom-file)
     (load custom-file))

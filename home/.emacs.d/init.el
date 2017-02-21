@@ -25,6 +25,7 @@
       require-final-newline t
       visible-bell t
       load-prefer-newer t
+      sentence-end-double-space nil
       custom-file (concat user-emacs-directory "custom.el")
       backup-directory-alist `(("." . ,(concat user-emacs-directory "backups"))))
 

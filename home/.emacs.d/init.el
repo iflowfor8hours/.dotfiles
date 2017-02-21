@@ -211,7 +211,7 @@
 (use-package org
   :bind (("C-c c" . org-capture))
   :config
-  (setq org-default-notes-files "~/org/¶ Notes.org")
+  (setq org-default-notes-file "~/org/¶ Notes.org")
   (setq org-log-done 'time)
   (setq org-use-speed-commands t)
   (add-hook 'org-mode-hook 'dang/org-mode-hook))

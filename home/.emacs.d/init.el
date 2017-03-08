@@ -195,6 +195,9 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
   (use-package swiper
     :commands (swiper)))
 
+;; JSON
+(setq json-encoding-default-indentation "\t")
+
 (use-package magit
   :bind ("C-c g" . magit-status))
 
@@ -257,7 +260,8 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 (use-package python
   :config
   (setq python-shell-interpreter "ipython"
-	python-shell-interpreter-args "--simple-prompt"))
+	python-shell-interpreter-args "--simple-prompt"
+	python-fill-docstring-style 'django))
 
 (use-package recentf
   :config (recentf-mode 1))

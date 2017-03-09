@@ -75,7 +75,7 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
   :init (add-hook 'text-mode-hook 'adaptive-wrap-prefix-mode))
 
 (use-package anaconda-mode
-  :diminish (anaconda-mode . " ⚕")
+  :diminish (anaconda-mode . " A")
   :commands (anaconda-mode anaconda-eldoc-mode)
   :init
   (add-hook 'python-mode-hook 'anaconda-mode)

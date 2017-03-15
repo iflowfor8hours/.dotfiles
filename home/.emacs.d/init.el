@@ -99,8 +99,10 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
   :bind ("C-'" . er/expand-region))
 
 (use-package flycheck
+  :diminish " ✓"
   :init (global-flycheck-mode)
-  :diminish " ✓")
+  ;; Pylint behaves poorly with the current release of Anaconda
+  :config (setq-default flycheck-disabled-checkers '(python-pylint)))
 
 (use-package hippie-exp
   :bind ("M-/" . hippie-expand))
@@ -142,6 +144,10 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
     ;; to `~/.emacs.d/smex-items'
     (setq smex-save-file (locate-user-emacs-file "smex-items"))
     (use-package smex)
+
+    :config
+    ;; Search in zip files with ag
+    (setq counsel-ag-base-command "ag --nocolor --nogroup --search-zip %s -- .")
 
     ;; All interactive functions that match `counsel-\w`
     :bind (

@@ -43,6 +43,8 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 (if (file-readable-p custom-file)
     (load custom-file))
 
+(add-hook 'text-mode-hook 'visual-line-mode)
+
 
 ;;; Configure packages
 

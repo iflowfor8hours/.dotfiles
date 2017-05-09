@@ -103,8 +103,21 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 (use-package flycheck
   :diminish " ✓"
   :init (global-flycheck-mode)
+  :config
   ;; Pylint behaves poorly with the current release of Anaconda
-  :config (setq-default flycheck-disabled-checkers '(python-pylint)))
+  (setq-default flycheck-disabled-checkers '(python-pylint))
+  ;; Set up mypy as a new syntax checker
+  (flycheck-define-command-checker 'python-mypy
+    "Use `mypy` to type-check Python code"
+    :command '("mypy" "--show-column-numbers" source-original)
+    :error-patterns
+    '((error line-start (file-name) ":" line ":" column ": error:" (message) line-end))
+    :modes 'python-mode
+    )
+  ;; Flycheck's checkers for Python don't chain together, so we need
+  ;; to add this to the front of the list
+  (add-to-list 'flycheck-checkers 'python-mypy)
+  )
 
 (use-package hippie-exp
   :bind ("M-/" . hippie-expand))

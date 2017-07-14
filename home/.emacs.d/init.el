@@ -92,6 +92,8 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 
 (diminish 'eldoc-mode " λ?")
 
+(electric-pair-mode t)
+
 (use-package exec-path-from-shell
   :if (and (dang/macOS-p) (display-graphic-p))
   :config

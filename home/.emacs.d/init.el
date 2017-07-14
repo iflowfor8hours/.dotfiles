@@ -162,7 +162,7 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 
     :config
     ;; Search in zip files with ag
-    (setq counsel-ag-base-command "ag --nocolor --nogroup --search-zip %s -- .")
+    (setq counsel-ag-base-command "ag --nocolor --nogroup --search-zip %s")
 
     ;; All interactive functions that match `counsel-\w`
     :bind (
@@ -280,7 +280,8 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 
 (use-package python
   :config
-  (setq python-shell-interpreter "ipython"
+  (setq fill-column 79
+	python-shell-interpreter "ipython"
 	python-shell-interpreter-args "--simple-prompt"
 	python-fill-docstring-style 'django))
 

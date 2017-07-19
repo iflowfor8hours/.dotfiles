@@ -204,6 +204,9 @@ alias glog="git log --oneline --decorate --graph"
 
 alias wr="whence -v"
 
+alias conac="source activate"
+alias conde="source deactivate"
+
 
 # Local settings
 # ==============

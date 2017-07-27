@@ -134,9 +134,7 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
   :ensure nil
   ;; swiper gets C-s
   :bind (("s-f" . isearch-forward-regexp)
-	 ("C-r" . isearch-backward-regexp)
-	 ("M-C-s" . isearch-forward)
-	 ("M-C-r" . isearch-backward)))
+	 ("C-r" . isearch-backward-regexp)))
 
 (use-package ivy
   ;; Force loading. Ivy automatically binds, for example, C-x b, but
@@ -279,6 +277,19 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
   (add-hook 'lisp-interaction-mode-hook 'enable-paredit-mode)
   (add-hook 'scheme-mode-hook 'enable-paredit-mode)
   )
+
+(use-package phi-search
+  :bind (
+	 ("M-C-s" . phi-search)
+	 ("M-C-r" . phi-search-backward)))
+
+(use-package projectile
+  :config
+  ;; There is also https://github.com/ericdanan/counsel-projectile,
+  ;; which adds the ability to select from a list of actions / apply
+  ;; actions without leaving the completion session, but it’s
+  ;; currently not available on MELPA Stable.
+  (setq projectile-completion-system 'ivy))
 
 (use-package python
   :config

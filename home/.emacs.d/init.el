@@ -45,6 +45,7 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 
 (add-hook 'text-mode-hook 'visual-line-mode)
 
+(global-hl-line-mode t)
 
 ;;; Configure packages
 
@@ -100,7 +101,9 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
   (exec-path-from-shell-initialize))
 
 (use-package expand-region
-  :bind ("C-'" . er/expand-region))
+  :bind
+  ("s-'" . er/expand-region)
+  ("C-c '" . er/expand-region))
 
 (use-package flycheck
   :diminish " ✓"
@@ -184,7 +187,7 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 	   ;; ("" . counsel-git-grep-query-replace)
 	   ;; ("" . counsel-git-grep-recenter)
 	   ;; ("" . counsel-git-grep-switch-cmd)
-	   ("C-c n" . counsel-git-log)
+	   ("C-c p" . counsel-git-log)
 	   ("C-c s" . counsel-git-stash)
 	   ("C-c r" . counsel-grep)
 	   ("C-s" . counsel-grep-or-swiper)
@@ -508,14 +511,40 @@ _d_: subtree
   (interactive)
   (scroll-up 1))
 
+;; From http://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
+(defun dang/narrow-or-widen-dwim (p)
+  "Widen if buffer is narrowed, narrow-dwim otherwise.
+Dwim means: region, org-src-block, org-subtree, or defun,
+whichever applies first. Narrowing to org-src-block actually
+calls `org-edit-src-code'.
+
+With prefix P, don't widen, just narrow even if buffer
+is already narrowed."
+  (interactive "P")
+  (declare (interactive-only))
+  (cond ((and (buffer-narrowed-p) (not p)) (widen))
+        ((region-active-p)
+         (narrow-to-region (region-beginning)
+                           (region-end)))
+        ((derived-mode-p 'org-mode)
+         ;; `org-edit-src-code' is not a real narrowing
+         ;; command. Remove this first conditional if
+         ;; you don't want it.
+         (cond ((ignore-errors (org-edit-src-code) t)
+                (delete-other-windows))
+               ((ignore-errors (org-narrow-to-block) t))
+               (t (org-narrow-to-subtree))))
+        (t (narrow-to-defun))))
+
 
 ;;; Non-package-related keybindings
 
 (bind-key "M-Q" 'dang/unfill-paragraph)
 (bind-key "s-/" 'dang/comment-or-uncomment-region-or-line)
-(bind-key "C-/" 'dang/comment-or-uncomment-region-or-line)
+(bind-key "C-c /" 'dang/comment-or-uncomment-region-or-line)
 (bind-key "M-p" 'dang/scroll-up-one-line)
 (bind-key "M-n" 'dang/scroll-down-one-line)
+(bind-key "C-c n" 'dang/narrow-or-widen-dwim)
 (when (dang/macOS-p)
   ;; Bug? Emacs doesn't see C-s-f
   (bind-key "<C-s-268632070>" 'toggle-frame-fullscreen)

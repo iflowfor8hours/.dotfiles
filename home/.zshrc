@@ -34,6 +34,58 @@ function eexists() {
     whence "$1" &> /dev/null
 }
 
+function pathdrop() {
+    # Remove items from the $path array that match the given pattern
+    # Usage:
+    #  droppath <pattern>
+    # Arguments:
+    #   pattern: A zsh pattern. Use quotes to prevent glob expansion
+    # Example:
+    #   droppath '*conda*'
+
+    local usage=$(cat <<-'EOF'
+	pathdrop: Remove items from the $path array that match the given pattern
+
+	Usage:
+	 pathdrop <pattern>
+
+	Arguments:
+	  pattern: A zsh pattern. Use quotes to prevent glob expansion
+
+	Example:
+	  pathdrop '*conda*'
+
+	Notes:
+	- Manually edit the path using `vared path`
+	- Remove an element by index using `path[<ix>]=()`
+	- Append a new item using `path+=<item>`
+	- Prepend a new item using `path=(<item> $path)`
+	EOF
+	)
+
+    if ! (($+1)); then
+	echo $usage
+	return 1
+    fi
+
+    # http://zsh.sourceforge.net/Doc/Release/Expansion.html#Parameter-Expansion
+
+    # When x is an array, ${x:#<pattern>} will exclude elements of x that match
+    # the pattern.
+
+    # ${~x} is supposed to turn *on* the GLOB_SUBST option for the expansion of
+    # x. It seems like it's actually turning the GLOB_SUBST option *off*,
+    # though.
+
+    path=(${path:#${~1}})
+    echo $path
+
+    # Since `PATH` and `path` already tied together, and already marked as
+    # exported variables, subprocesses launched by this shell will see the
+    # updated value.
+
+    return 0
+}
 
 # Plugins
 # =======

@@ -95,6 +95,8 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 
 (electric-pair-mode t)
 
+(use-package ensime)
+
 (use-package exec-path-from-shell
   :if (and (dang/macOS-p) (display-graphic-p))
   :config
@@ -187,7 +189,7 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 	   ;; ("" . counsel-git-grep-query-replace)
 	   ;; ("" . counsel-git-grep-recenter)
 	   ;; ("" . counsel-git-grep-switch-cmd)
-	   ("C-c p" . counsel-git-log)
+	   ;; ("C-c p" . counsel-git-log)
 	   ("C-c s" . counsel-git-stash)
 	   ("C-c r" . counsel-grep)
 	   ("C-s" . counsel-grep-or-swiper)
@@ -292,7 +294,8 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
   ;; which adds the ability to select from a list of actions / apply
   ;; actions without leaving the completion session, but it’s
   ;; currently not available on MELPA Stable.
-  (setq projectile-completion-system 'ivy))
+  (setq projectile-completion-system 'ivy)
+  :bind ("C-c p" . projectile-mode))
 
 (use-package python
   :config

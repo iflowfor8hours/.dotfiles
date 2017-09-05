@@ -35,13 +35,6 @@ function eexists() {
 }
 
 function pathdrop() {
-    # Remove items from the $path array that match the given pattern
-    # Usage:
-    #  droppath <pattern>
-    # Arguments:
-    #   pattern: A zsh pattern. Use quotes to prevent glob expansion
-    # Example:
-    #   droppath '*conda*'
 
     local usage=$(cat <<-'EOF'
 	pathdrop: Remove items from the $path array that match the given pattern

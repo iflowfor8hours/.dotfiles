@@ -50,7 +50,7 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 ;;; Configure packages
 
 (require 'package)
-(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 
 (unless package-archive-contents
@@ -125,6 +125,10 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
   ;; to add this to the front of the list
   (add-to-list 'flycheck-checkers 'python-mypy)
   )
+
+(use-package gist
+  :bind (("C-c %" . gist-list)
+	 ("C-c ^" . gist-region-or-buffer)))
 
 (use-package hippie-exp
   :bind ("M-/" . hippie-expand))
@@ -309,6 +313,18 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 
 (use-package reveal-in-osx-finder
   :if (dang/macOS-p))
+
+(use-package rust-mode
+  :mode "\\.rs\\'"
+  :init
+  (use-package cargo :commands (cargo-minor-mode))
+  (use-package racer
+    :commands (racer-mode)
+    :config (add-hook 'racer-mode-hook 'eldoc-mode))
+  :config
+  (add-hook 'rust-mode-hook 'cargo-minor-mode)
+  (add-hook 'rust-mode-hook 'racer-mode)
+  )
 
 (use-package saveplace
   :config

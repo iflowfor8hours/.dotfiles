@@ -135,8 +135,8 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 (use-package hippie-exp
   :bind ("M-/" . hippie-expand))
 
-(use-package hydra
-  :commands defhydra)
+(use-package hydra)
+(require 'hydra)
 
 (use-package ibuffer
   :bind ("C-x C-b" . ibuffer))
@@ -256,7 +256,13 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 
 (use-package org
   :bind (("C-c c" . org-capture))
+  ;; We reference these functions in hydras and so on; this avoids
+  ;; warnings from the byte compiler
+  :functions (org-indent-mode org-edit-src-code org-narrow-to-block org-narrow-to-subtree)
   :config
+  (use-package ox-reveal
+    :config
+    (setq org-reveal-root "http://cdn.jsdelivr.net/reveal.js/3.0.0/"))
   (setq org-default-notes-file "~/org/¶ Notes.org")
   (setq org-log-done 'time)
   (setq org-use-speed-commands t)
@@ -354,7 +360,11 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
   :diminish " ‽"
   :config (which-key-mode))
 
+;; Using `use-package' with `winner' caused complaints that
+;; `winner-undo' and `winner-redo' might not be defined at runtime.
 (use-package winner
+  :demand t
+  :commands (winner-undo winner-redo)
   :config (winner-mode 1))
 
 
@@ -421,7 +431,7 @@ _SPC_ cancel"
                     'hydra-window/body))
        )
    ("o" delete-other-windows)
-   ("O" ace-maximize-window)
+   ("O" ace-delete-other-windows)
 
    ;; Change buffers
    ("f" (call-interactively (global-key-binding (kbd "C-x C-f"))))
@@ -441,39 +451,6 @@ _SPC_ cancel"
    
    ("SPC" nil)
    )
-
-(defhydra hydra-outline (:color pink :hint nil)
-  "
-^Hide^             ^Show^           ^Move
-^^^^^^------------------------------------------------------
-_q_: sublevels     _a_: all         _u_: up
-_t_: body          _e_: entry       _n_: next visible
-_o_: other         _i_: children    _p_: previous visible
-_c_: entry         _k_: branches    _f_: forward same level
-_l_: leaves        _s_: subtree     _b_: backward same level
-_d_: subtree
-
-"
-  ;; Hide
-  ("q" outline-hide-sublevels)    ; Hide everything but the top-level headings
-  ("t" outline-hide-body)         ; Hide everything but headings (all body lines)
-  ("o" outline-hide-other)        ; Hide other branches
-  ("c" outline-hide-entry)        ; Hide this entry's body
-  ("l" outline-hide-leaves)       ; Hide body lines in this entry and sub-entries
-  ("d" outline-hide-subtree)      ; Hide everything in this entry and sub-entries
-  ;; Show
-  ("a" outline-show-all)          ; Show (expand) everything
-  ("e" outline-show-entry)        ; Show this heading's body
-  ("i" outline-show-children)     ; Show this heading's immediate child sub-headings
-  ("k" outline-show-branches)     ; Show all sub-headings under this heading
-  ("s" outline-show-subtree)      ; Show (expand) everything in this heading & below
-  ;; Move
-  ("u" outline-up-heading)                ; Up
-  ("n" outline-next-visible-heading)      ; Next
-  ("p" outline-previous-visible-heading)  ; Previous
-  ("f" outline-forward-same-level)        ; Forward - same level
-  ("b" outline-backward-same-level)       ; Backward - same level
-  ("z" nil "leave"))
 
 (defhydra hydra-multiple-cursors (:hint nil)
   "
@@ -522,6 +499,14 @@ _d_: subtree
   (let ((fill-column (point-max)))
     (fill-paragraph nil region)))
 
+(defun dang/fill-or-unfill-paragraph ()
+  "Like `fill-paragraph', but unfill if used twice."
+  (interactive)
+  (let ((fill-column (if (eq last-command 'dang/fill-or-unfill-paragraph)
+			 (point-max)
+		       fill-column)))
+    (call-interactively #'fill-paragraph)))
+
 ;; Explain how to scroll by single lines to Emacs
 (defun dang/scroll-up-one-line ()
   "Scroll the view up one line."
@@ -560,6 +545,7 @@ is already narrowed."
 
 ;;; Non-package-related keybindings
 
+(bind-key [remap fill-paragraph] 'dang/fill-or-unfill-paragraph)
 (bind-key "M-Q" 'dang/unfill-paragraph)
 (bind-key "s-/" 'dang/comment-or-uncomment-region-or-line)
 (bind-key "C-c /" 'dang/comment-or-uncomment-region-or-line)
@@ -572,7 +558,6 @@ is already narrowed."
   ;; Unbind the right ⌥ (Option) key for easier typing of spiffy characters.
   (setq mac-right-option-modifier nil)
   )
-(bind-key "C-c #" 'hydra-outline/body)
 (bind-key "C-c o" 'hydra-window/body)
 (bind-key "C-c m" 'hydra-multiple-cursors/body)
 

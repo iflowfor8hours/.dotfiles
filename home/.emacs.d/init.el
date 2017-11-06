@@ -83,14 +83,15 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
   :commands (anaconda-mode anaconda-eldoc-mode)
   :init
   (add-hook 'python-mode-hook 'anaconda-mode)
-  (add-hook 'python-mode-hook 'anaconda-eldoc-mode))
+  (add-hook 'python-mode-hook 'anaconda-eldoc-mode)
+  :config
+  (use-package company-anaconda
+    :config (add-to-list 'company-backends 'company-anaconda)))
 
 (use-package company
   :diminish " ɕ"
   :config
-  (add-hook 'prog-mode-hook 'company-mode)
-  (use-package company-anaconda
-    :config (add-to-list 'company-backends 'company-anaconda)))
+  (add-hook 'prog-mode-hook 'company-mode))
 
 (diminish 'eldoc-mode " λ?")
 

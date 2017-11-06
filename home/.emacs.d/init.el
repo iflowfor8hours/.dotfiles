@@ -28,6 +28,7 @@
       sentence-end-double-space nil
       custom-file (concat user-emacs-directory "custom.el")
       backup-directory-alist `(("." . ,(concat user-emacs-directory "backups"))))
+(setq-default fill-column 80)
 
 (defvar apropos-do-all t
   "Search more things with `apropos' commands.
@@ -302,9 +303,9 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
   :bind ("C-c p" . projectile-mode))
 
 (use-package python
+  :defer t
   :config
-  (setq fill-column 79
-	python-shell-interpreter "ipython"
+  (setq python-shell-interpreter "ipython"
 	python-shell-interpreter-args "--simple-prompt"
 	python-fill-docstring-style 'django))
 

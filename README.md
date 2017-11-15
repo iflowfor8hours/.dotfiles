@@ -17,7 +17,7 @@ Install or update:
 - [jq](https://stedolan.github.io/jq)
 - [mosh](https://mosh.org)
 - [mycli](http://www.mycli.net)
-- [pipenv](https://docs.pipenv.org) (`pip install pipenv`)
+- [pipenv](https://docs.pipenv.org)
 - [The Silver Searcher](https://geoff.greer.fm/ag)
 - [tree](http://mama.indstate.edu/users/ice/tree)
 - [tmux](https://github.com/tmux/tmux/wiki)

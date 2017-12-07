@@ -62,8 +62,8 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 (eval-when-compile
   (require 'use-package)
   (setq use-package-always-ensure t))
-(require 'bind-key)
-(require 'diminish)
+(use-package bind-key)
+(use-package diminish)
 
 (defun dang/macOS-p ()
   "Test whether Emacs is running on a Mac."
@@ -71,38 +71,34 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 
 (use-package ace-window
   :bind ("C-x o" . ace-window)
-  :config
-  (setq aw-keys '(?a ?s ?d ?f ?j ?k ?l)))
+  :config (setq aw-keys '(?a ?s ?d ?f ?j ?k ?l)))
 
 (use-package adaptive-wrap
-  :commands (adaptive-wrap-prefix-mode)
-  :init (add-hook 'text-mode-hook 'adaptive-wrap-prefix-mode))
+  :hook (text-mode adaptive-wrap-prefix-mode))
 
 (use-package anaconda-mode
   :diminish (anaconda-mode . " A")
-  :commands (anaconda-mode anaconda-eldoc-mode)
-  :init
-  (add-hook 'python-mode-hook 'anaconda-mode)
-  (add-hook 'python-mode-hook 'anaconda-eldoc-mode)
-  :config
-  (use-package company-anaconda
-    :config (add-to-list 'company-backends 'company-anaconda)))
+  :hook ((python-mode . anaconda-mode)
+	 (python-mode . anaconda-eldoc-mode)))
 
 (use-package company
   :diminish " ɕ"
-  :config
-  (add-hook 'prog-mode-hook 'company-mode))
+  :hook (prog-mode . company-mode))
+
+(use-package company-anaconda
+  :after 'anaconda-mode
+  :config (add-to-list 'company-backends 'company-anaconda))
 
 (diminish 'eldoc-mode " λ?")
 
 (electric-pair-mode t)
 
-(use-package ensime)
+(use-package ensime
+  :disabled)
 
 (use-package exec-path-from-shell
   :if (and (dang/macOS-p) (display-graphic-p))
-  :config
-  (exec-path-from-shell-initialize))
+  :config (exec-path-from-shell-initialize))
 
 (use-package expand-region
   :bind
@@ -135,8 +131,8 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 (use-package hippie-exp
   :bind ("M-/" . hippie-expand))
 
-(use-package hydra)
-(require 'hydra)
+(use-package hydra) ; Make sure it’s installed
+(require 'hydra) ; Silence warnings from the byte compiler
 
 (use-package ibuffer
   :bind ("C-x C-b" . ibuffer))
@@ -148,84 +144,68 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 	 ("C-r" . isearch-backward-regexp)))
 
 (use-package ivy
-  ;; Force loading. Ivy automatically binds, for example, C-x b, but
-  ;; won't do so until the package is loaded. We'd like these to be
-  ;; available immediately.
   :demand t
   :diminish " ❦"
   :config
   (ivy-mode 1)
-  ;; add ‘recentf-mode’ and bookmarks to ‘ivy-switch-buffer’, and show
-  ;; their full pathnames.
-  (setq ivy-use-virtual-buffers t)
-  (setq ivy-virtual-abbreviate 'full)
+  :custom
+  (ivy-use-selectable-prompt t "Use C-p to turn the current text into a selectable item")
+  (ivy-use-virtual-buffers t "Add `recentf-mode' and bookmarks to `ivy-switch-buffer'")
+  (ivy-virtual-abbreviate 'full "Show full paths to virtual buffers")
+  :bind ("C-c C-r" . ivy-resume))
 
-  (use-package counsel
-    :init
-    ;; Apparently if smex is available, then counsel-M-x will use it
-    ;; instead of regular command, which gives you recent items at the
-    ;; top and maybe other nice things. I'm not sure why I have to set
-    ;; the save file manually. If I don't, on my work laptop, Smex
-    ;; always saves to `~/.smex-items' even though it should default
-    ;; to `~/.emacs.d/smex-items'
-    (setq smex-save-file (locate-user-emacs-file "smex-items"))
-    (use-package smex)
+(use-package ivy-hydra
+  ;; Provides a useful hydra in ivy completion buffers; binds to C-o
+  :after (ivy hydra))
 
-    :config
-    ;; Search in zip files with ag
-    (setq counsel-ag-base-command "ag --nocolor --nogroup --search-zip %s")
-
-    ;; All interactive functions that match `counsel-\w`
-    :bind (
-	   ("M-x" . counsel-M-x)
-	   ;; ("" . counsel-ace-link)
-	   ("C-c k" . counsel-ag)
-	   ;; ("" . counsel-cl)
-	   ;; ("" . counsel-clj)
-	   ("<f1> b" . counsel-descbinds)
-	   ("<f1> f" . counsel-describe-function)
-	   ("<f1> v" . counsel-describe-variable)
-	   ;; ("" . counsel-el)
-	   ;; ("" . counsel-esh-history)
-	   ;; ("" . counsel-expression-history)
-	   ("C-x C-f" . counsel-find-file)
-	   ;; ("" . counsel-find-symbol)
-	   ("C-c t" . counsel-git)
-	   ;; ("C-c j" . counsel-git-grep)
-	   ;; ("" . counsel-git-grep-query-replace)
-	   ;; ("" . counsel-git-grep-recenter)
-	   ;; ("" . counsel-git-grep-switch-cmd)
-	   ;; ("C-c p" . counsel-git-log)
-	   ("C-c s" . counsel-git-stash)
-	   ("C-c r" . counsel-grep)
-	   ("C-s" . counsel-grep-or-swiper)
-	   ("C-c u" . counsel-imenu)
-	   ("<f1> S" . counsel-info-lookup-symbol)
-	   ;; ("" . counsel-jedi)
-	   ;; ("" . counsel-linux-app)
-	   ;; ("" . counsel-list-processes)
-	   ;; ("<f1> l" . counsel-load-library)
-	   ;; ("" . counsel-load-theme)
-	   ("C-c l" . counsel-locate)
-	   ;; ("" . counsel-mode)
-	   ;; ("" . counsel-org-tag)
-	   ;; ("" . counsel-org-tag-agenda)
-	   ;; ("" . counsel-pt)
-	   ;; ("" . counsel-recoll)
-	   ;; ("" . counsel-rhythmbox)
-	   ("C-c h" . counsel-shell-history)
-	   ("M-`" . counsel-tmm)
-	   ("<f2> u" . counsel-unicode-char)
-	   ;; ("" . counsel-up-directory)
-	   ("M-y" . counsel-yank-pop)
-	   )
-    )
-
-  ;; Provides the hydra that ivy automatically binds to C-o
-  (use-package ivy-hydra)
-
-  (use-package swiper
-    :commands (swiper)))
+(use-package counsel
+  :demand t
+  :after ivy
+  ;; All interactive functions that match `counsel-\w`
+  :bind (("M-x" . counsel-M-x)
+	 ;; ("" . counsel-ace-link)
+	 ("C-c k" . counsel-ag)
+	 ;; ("" . counsel-cl)
+	 ;; ("" . counsel-clj)
+	 ("<f1> b" . counsel-descbinds)
+	 ("<f1> f" . counsel-describe-function)
+	 ("<f1> v" . counsel-describe-variable)
+	 ;; ("" . counsel-el)
+	 ;; ("" . counsel-esh-history)
+	 ;; ("" . counsel-expression-history)
+	 ("C-x C-f" . counsel-find-file)
+	 ;; ("" . counsel-find-symbol)
+	 ("C-c t" . counsel-git)
+	 ;; ("C-c j" . counsel-git-grep)
+	 ;; ("" . counsel-git-grep-query-replace)
+	 ;; ("" . counsel-git-grep-recenter)
+	 ;; ("" . counsel-git-grep-switch-cmd)
+	 ;; ("C-c p" . counsel-git-log)
+	 ("C-c s" . counsel-git-stash)
+	 ("C-c r" . counsel-grep)
+	 ("C-s" . counsel-grep-or-swiper)
+	 ("C-c u" . counsel-imenu)
+	 ("<f1> S" . counsel-info-lookup-symbol)
+	 ;; ("" . counsel-jedi)
+	 ;; ("" . counsel-linux-app)
+	 ;; ("" . counsel-list-processes)
+	 ;; ("<f1> l" . counsel-load-library)
+	 ;; ("" . counsel-load-theme)
+	 ("C-c l" . counsel-locate)
+	 ;; ("" . counsel-mode)
+	 ;; ("" . counsel-org-tag)
+	 ;; ("" . counsel-org-tag-agenda)
+	 ;; ("" . counsel-pt)
+	 ;; ("" . counsel-recoll)
+	 ;; ("" . counsel-rhythmbox)
+	 ("C-c h" . counsel-shell-history)
+	 ("M-`" . counsel-tmm)
+	 ("<f2> u" . counsel-unicode-char)
+	 ;; ("" . counsel-up-directory)
+	 ("M-y" . counsel-yank-pop))
+  :custom
+  (counsel-ag-base-command "ag --nocolor --nogroup --search-zip %s" "Search inside zip files with ag")
+  )
 
 ;; JSON
 (setq json-encoding-default-indentation "\t")
@@ -234,12 +214,12 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
   :bind ("C-c g" . magit-status))
 
 (use-package markdown-mode
-  :commands (markdown-mode gfm-mode)
+  ;; :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . gfm-mode)
 	 ("\\.md\\'" . markdown-mode)
 	 ("\\.markdown\\'" . markdown-mode)
 	 ("\\.mdown\\'" . markdown-mode))
-  :config (setq markdown-command "multimarkdown"))
+  :custom (markdown-command "multimarkdown"))
 
 (use-package misc
   :ensure nil
@@ -255,17 +235,22 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 	 ("s-<mouse-1>" . mc/add-cursor-on-click)))
 
 (use-package org
+  :diminish (org-indent-mode " ⇥")
   :bind (("C-c c" . org-capture))
-  ;; We reference these functions in hydras and so on; this avoids
-  ;; warnings from the byte compiler
-  :functions (org-indent-mode org-edit-src-code org-narrow-to-block org-narrow-to-subtree)
+  ;; These are used in `dang/narrow-or-widen-dwim', and might (?) be called
+  ;; before org is loaded. `org-indent-mode' should not need to be in this list,
+  ;; but there’s some issue with `use-package' and byte compiler warnings.
+  :commands (org-indent-mode org-edit-src-code org-narrow-to-block org-narrow-to-subtree)
+  :custom
+  (org-default-notes-file "~/org/¶ Notes.org")
+  (org-log-done 'time)
+  (org-use-speed-commands t)
   :config
-  (use-package ox-reveal
-    :config
-    (setq org-reveal-root "http://cdn.jsdelivr.net/reveal.js/3.0.0/"))
-  (setq org-default-notes-file "~/org/¶ Notes.org")
-  (setq org-log-done 'time)
-  (setq org-use-speed-commands t)
+  (defun dang/org-mode-hook ()
+    "Set up line wrapping and indentation for `org-mode' just the way I like it."
+    (adaptive-wrap-prefix-mode 0)
+    (visual-line-mode 1)
+    (org-indent-mode 1))
   (add-hook 'org-mode-hook 'dang/org-mode-hook))
 
 (use-package org-journal
@@ -279,42 +264,34 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 
 (use-package osx-trash
   :if (dang/macOS-p)
-  :config
-  (osx-trash-setup)
-  (setq delete-by-moving-to-trash t))
+  :custom (delete-by-moving-to-trash t)
+  :config (osx-trash-setup))
+
+(use-package ox-reveal
+  :after 'org
+  :custom (org-reveal-root "http://cdn.jsdelivr.net/reveal.js/3.0.0/"))
 
 (use-package paredit
-  :commands (paredit-mode enable-paredit-mode)
   :diminish " ⁽₎"
-  :init
-  (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
-  (add-hook 'eval-expression-minibuffer-setup-hook 'enable-paredit-mode)
-  (add-hook 'ielm-mode-hook 'enable-paredit-mode)
-  (add-hook 'lisp-mode-hook 'enable-paredit-mode)
-  (add-hook 'lisp-interaction-mode-hook 'enable-paredit-mode)
-  (add-hook 'scheme-mode-hook 'enable-paredit-mode)
-  )
+  :hook ((emacs-lisp-mode eval-expression-minibuffer-setup ielm-mode lisp-mode lisp-interaction-mode scheme-mode) . enable-paredit-mode))
 
 (use-package phi-search
-  :bind (
-	 ("M-C-s" . phi-search)
+  :bind (("M-C-s" . phi-search)
 	 ("M-C-r" . phi-search-backward)))
 
 (use-package projectile
-  :config
-  ;; There is also https://github.com/ericdanan/counsel-projectile,
-  ;; which adds the ability to select from a list of actions / apply
-  ;; actions without leaving the completion session, but it’s
-  ;; currently not available on MELPA Stable.
-  (setq projectile-completion-system 'ivy)
+  ;; There is also https://github.com/ericdanan/counsel-projectile, which adds
+  ;; the ability to select from a list of actions / apply actions without
+  ;; leaving the completion session.
+  :custom (projectile-completion-system 'ivy)
   :bind ("C-c p" . projectile-mode))
 
 (use-package python
   :defer t
-  :config
-  (setq python-shell-interpreter "ipython"
-	python-shell-interpreter-args "--simple-prompt"
-	python-fill-docstring-style 'django))
+  :custom
+  (python-shell-interpreter "ipython")
+  (python-shell-interpreter-args "--simple-prompt")
+  (python-fill-docstring-style 'django))
 
 (use-package recentf
   :config (recentf-mode 1))
@@ -324,15 +301,15 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 
 (use-package rust-mode
   :mode "\\.rs\\'"
-  :init
-  (use-package cargo :commands (cargo-minor-mode))
-  (use-package racer
-    :commands (racer-mode)
-    :config (add-hook 'racer-mode-hook 'eldoc-mode))
   :config
   (add-hook 'rust-mode-hook 'cargo-minor-mode)
-  (add-hook 'rust-mode-hook 'racer-mode)
-  )
+  (add-hook 'rust-mode-hook 'racer-mode))
+
+(use-package cargo :commands (cargo-minor-mode))
+
+(use-package racer
+  :commands (racer-mode)
+  :config (add-hook 'racer-mode-hook 'eldoc-mode))
 
 (use-package saveplace
   :config
@@ -342,17 +319,21 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 (use-package smart-mode-line
   :config (sml/setup))
 
+(use-package swiper
+  :demand t
+  :after ivy
+  :bind ("C-s" . swiper))
+
 (use-package undo-tree
   :diminish undo-tree-mode
-  :config
-  (progn
-    (global-undo-tree-mode)
-    (setq undo-tree-visualizer-timestamps t)
-    (setq undo-tree-visualizer-diff t)))
+  :custom
+  (undo-tree-visualizer-timestamps t)
+  (undo-tree-visualizer-diff t)
+  :config (global-undo-tree-mode))
 
 (use-package uniquify
   :ensure nil
-  :config (setq uniquify-buffer-name-style 'forward))
+  :custom (uniquify-buffer-name-style 'forward))
 
 (diminish 'visual-line-mode " ↩")
 
@@ -360,8 +341,6 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
   :diminish " ‽"
   :config (which-key-mode))
 
-;; Using `use-package' with `winner' caused complaints that
-;; `winner-undo' and `winner-redo' might not be defined at runtime.
 (use-package winner
   :demand t
   :commands (winner-undo winner-redo)
@@ -474,13 +453,6 @@ _SPC_ cancel"
 
 
 ;;; Helper functions
-
-(defun dang/org-mode-hook ()
-  "Set up line wrapping and indentation for `org-mode' just the way I like it."
-  (adaptive-wrap-prefix-mode 0)
-  (visual-line-mode 1)
-  (diminish 'org-indent-mode " ⇥")
-  (org-indent-mode 1))
 
 ;; Explain how to comment and uncomment lines to Emacs
 (defun dang/comment-or-uncomment-region-or-line ()

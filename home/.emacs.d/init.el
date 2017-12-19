@@ -47,6 +47,7 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 (add-hook 'text-mode-hook 'visual-line-mode)
 
 (global-hl-line-mode t)
+(savehist-mode 1)
 
 ;;; Configure packages
 
@@ -62,6 +63,7 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 (eval-when-compile
   (require 'use-package)
   (setq use-package-always-ensure t))
+
 (use-package bind-key)
 (use-package diminish)
 
@@ -74,7 +76,7 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
   :config (setq aw-keys '(?a ?s ?d ?f ?j ?k ?l)))
 
 (use-package adaptive-wrap
-  :hook (text-mode adaptive-wrap-prefix-mode))
+  :hook (text-mode . adaptive-wrap-prefix-mode))
 
 (use-package anaconda-mode
   :diminish (anaconda-mode . " A")
@@ -86,8 +88,31 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
   :hook (prog-mode . company-mode))
 
 (use-package company-anaconda
-  :after 'anaconda-mode
+  :after (anaconda-mode company)
   :config (add-to-list 'company-backends 'company-anaconda))
+
+(use-package counsel
+  :after (ivy smex)
+  :bind (("M-x" . counsel-M-x)
+	 ("C-c k" . counsel-ag)
+	 ("<f1> b" . counsel-descbinds)
+	 ("<f1> f" . counsel-describe-function)
+	 ("<f1> v" . counsel-describe-variable)
+	 ("C-x C-f" . counsel-find-file)
+	 ("C-c f" . counsel-git) ; Like `find-file'
+	 ("C-c t" . counsel-git-grep)
+	 ("C-s" . counsel-grep-or-swiper)
+	 ("C-c u" . counsel-imenu)
+	 ("<f1> S" . counsel-info-lookup-symbol)
+	 ("C-c l" . counsel-locate)
+	 ("C-c r" . counsel-rg)
+	 ("C-c h" . counsel-shell-history)
+	 ("M-`" . counsel-tmm)
+	 ("<f2> u" . counsel-unicode-char)
+	 ("M-y" . counsel-yank-pop))
+  :custom
+  (counsel-ag-base-command "ag --nocolor --nogroup --search-zip %s" "Search inside zip files with ag")
+  )
 
 (diminish 'eldoc-mode " λ?")
 
@@ -132,7 +157,6 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
   :bind ("M-/" . hippie-expand))
 
 (use-package hydra) ; Make sure it’s installed
-(require 'hydra) ; Silence warnings from the byte compiler
 
 (use-package ibuffer
   :bind ("C-x C-b" . ibuffer))
@@ -158,55 +182,6 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
   ;; Provides a useful hydra in ivy completion buffers; binds to C-o
   :after (ivy hydra))
 
-(use-package counsel
-  :demand t
-  :after ivy
-  ;; All interactive functions that match `counsel-\w`
-  :bind (("M-x" . counsel-M-x)
-	 ;; ("" . counsel-ace-link)
-	 ("C-c k" . counsel-ag)
-	 ;; ("" . counsel-cl)
-	 ;; ("" . counsel-clj)
-	 ("<f1> b" . counsel-descbinds)
-	 ("<f1> f" . counsel-describe-function)
-	 ("<f1> v" . counsel-describe-variable)
-	 ;; ("" . counsel-el)
-	 ;; ("" . counsel-esh-history)
-	 ;; ("" . counsel-expression-history)
-	 ("C-x C-f" . counsel-find-file)
-	 ;; ("" . counsel-find-symbol)
-	 ("C-c t" . counsel-git)
-	 ;; ("C-c j" . counsel-git-grep)
-	 ;; ("" . counsel-git-grep-query-replace)
-	 ;; ("" . counsel-git-grep-recenter)
-	 ;; ("" . counsel-git-grep-switch-cmd)
-	 ;; ("C-c p" . counsel-git-log)
-	 ("C-c s" . counsel-git-stash)
-	 ("C-c r" . counsel-grep)
-	 ("C-s" . counsel-grep-or-swiper)
-	 ("C-c u" . counsel-imenu)
-	 ("<f1> S" . counsel-info-lookup-symbol)
-	 ;; ("" . counsel-jedi)
-	 ;; ("" . counsel-linux-app)
-	 ;; ("" . counsel-list-processes)
-	 ;; ("<f1> l" . counsel-load-library)
-	 ;; ("" . counsel-load-theme)
-	 ("C-c l" . counsel-locate)
-	 ;; ("" . counsel-mode)
-	 ;; ("" . counsel-org-tag)
-	 ;; ("" . counsel-org-tag-agenda)
-	 ;; ("" . counsel-pt)
-	 ;; ("" . counsel-recoll)
-	 ;; ("" . counsel-rhythmbox)
-	 ("C-c h" . counsel-shell-history)
-	 ("M-`" . counsel-tmm)
-	 ("<f2> u" . counsel-unicode-char)
-	 ;; ("" . counsel-up-directory)
-	 ("M-y" . counsel-yank-pop))
-  :custom
-  (counsel-ag-base-command "ag --nocolor --nogroup --search-zip %s" "Search inside zip files with ag")
-  )
-
 ;; JSON
 (setq json-encoding-default-indentation "\t")
 
@@ -214,7 +189,6 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
   :bind ("C-c g" . magit-status))
 
 (use-package markdown-mode
-  ;; :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . gfm-mode)
 	 ("\\.md\\'" . markdown-mode)
 	 ("\\.markdown\\'" . markdown-mode)
@@ -319,10 +293,7 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 (use-package smart-mode-line
   :config (sml/setup))
 
-(use-package swiper
-  :demand t
-  :after ivy
-  :bind ("C-s" . swiper))
+(use-package smex)
 
 (use-package undo-tree
   :diminish undo-tree-mode
@@ -336,6 +307,9 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
   :custom (uniquify-buffer-name-style 'forward))
 
 (diminish 'visual-line-mode " ↩")
+
+(use-package wgrep
+  :after (ivy counsel))
 
 (use-package which-key
   :diminish " ‽"

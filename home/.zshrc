@@ -1,3 +1,7 @@
+# The normal zsh sigil for computing this is `${0:A:h}`, but it looks like that
+# will not work for files that zsh sources as part of its startup sequence.
+ROOT="$HOME/.dotfiles"
+
 export ZSH_CACHE_DIR="$HOME/.cache/zsh"
 
 
@@ -12,10 +16,29 @@ function source_if_possible()
 }
 
 function abspath() {
-    # generate absolute path from relative path
-    # $1     : relative filename
-    # return : absolute path
-    # From http://stackoverflow.com/a/23002317/514210
+
+    local usage=$(cat <<-'EOF'
+	abspath: Resolve a relative path to an absolute path
+
+	Usage:
+	 abspath <path>
+
+	Arguments:
+	  path: A path
+
+	Example:
+	  abspath 'README.md' # --> /home/jsmith/README.md
+
+	Notes:
+	  Taken from http://stackoverflow.com/a/23002317/514210
+	EOF
+	)
+
+    if ! (($+1)); then
+	echo $usage
+	return 1
+    fi
+
     if [[ -d "$1" ]]; then
         # dir
         (cd "$1"; pwd)
@@ -49,10 +72,10 @@ function pathdrop() {
 	  pathdrop '*conda*'
 
 	Notes:
-	- Manually edit the path using `vared path`
-	- Remove an element by index using `path[<ix>]=()`
-	- Append a new item using `path+=<item>`
-	- Prepend a new item using `path=(<item> $path)`
+	  - Manually edit the path using `vared path`
+	  - Remove an element by index using `path[<ix>]=()`
+	  - Append a new item using `path+=<item>`
+	  - Prepend a new item using `path=(<item> $path)`
 	EOF
 	)
 
@@ -73,7 +96,7 @@ function pathdrop() {
     path=(${path:#${~1}})
     echo $path
 
-    # Since `PATH` and `path` already tied together, and already marked as
+    # Since `PATH` and `path` are already tied together, and already marked as
     # exported variables, subprocesses launched by this shell will see the
     # updated value.
 
@@ -83,32 +106,32 @@ function pathdrop() {
 # Plugins
 # =======
 
-source_if_possible "$HOME/.dotfiles/zsh_plugins/liquidprompt/liquidprompt"
+source_if_possible "${ROOT}/zsh_plugins/liquidprompt/liquidprompt"
 
-source_if_possible "$HOME/.dotfiles/zsh_plugins/fasd/fasd"
+source_if_possible "${ROOT}/zsh_plugins/fasd/fasd"
 eexists fasd && eval "$(fasd --init auto)"
 
-source_if_possible "$HOME/.dotfiles/zsh_plugins/zaw/zaw.zsh"
+source_if_possible "${ROOT}/zsh_plugins/zaw/zaw.zsh"
 
-source_if_possible "$HOME/.dotfiles/zsh_plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
+source_if_possible "${ROOT}/zsh_plugins/zsh-autosuggestions/zsh-autosuggestions.zsh"
 
 
 # GNU Coreutils
 # =============
 
 # If GNU coreutils are installed, we'd like those to be available for
-# interactive use. These binaries are installed by Homebrew into /usr/local/bin
-# under names prefixed by 'g', so we get 'gls', 'gmkdir', and so on. There is
-# another directory that contains non-prefixed versions of each of these
-# binaries as well, and adding it to the path is one way to go. However,
+# interactive use. These binaries are installed by Homebrew into `$(brew
+# --prefix)/bin` under names prefixed by 'g', so we get 'gls', 'gmkdir', and so
+# on. There is another directory that contains non-prefixed versions of each of
+# these binaries as well, and adding it to the path is one way to go. However,
 # sometimes build tools complain about non-prefixed coreutils on PATH, so this
 # aliasing method is a different way to tackle it.
 
-# There was some sort of issue with using an alias with '['.
 if eexists brew && [[ -d $(brew --prefix)/opt/coreutils/libexec/gnubin ]]; then
     for cmd in $( ls $(brew --prefix)/opt/coreutils/libexec/gnubin ); do
         alias "${cmd}"="g${cmd}"
     done
+    # There was some sort of issue with using an alias with '['.
     unalias "["
     alias ls="gls --color=auto"
 elif ls --color=auto /dev/null &> /dev/null; then
@@ -147,6 +170,7 @@ alias lsa="ls --almost-all"
 alias ll="ls -l --human-readable"
 alias la="ls -l --almost-all --human-readable"
 alias lst="tree -phugDC"
+alias lst2="lst -L 2"
 
 alias dirsize="du --human-readable --max-depth=1 --exclude='./.*' | sort --human-numeric-sort --reverse"
 alias dirsizeall="du --human-readable --max-depth=1 | sort --human-numeric-sort --reverse"
@@ -156,7 +180,7 @@ alias dirsizeall="du --human-readable --max-depth=1 | sort --human-numeric-sort 
 # ==========
 
 eexists brew && fpath=("$(brew --prefix)/share/zsh/site-functions" $fpath)
-fpath=("$HOME/.dotfiles/zsh_plugins/zsh-completions/src" $fpath)
+fpath=("${ROOT}/zsh_plugins/zsh-completions/src" $fpath)
 
 autoload -U compinit
 

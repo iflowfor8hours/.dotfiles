@@ -103,6 +103,31 @@ function pathdrop() {
     return 0
 }
 
+function fillna {
+
+    # https://gist.github.com/DGrady/c80fae1398ffaad0c567beffd258db9f explains
+    # where this came from and how to use it.
+
+    # Make `opts` an associative array and set default values. `local` is the
+    # same as `typeset`; this also makes the parameter local to this function.
+    typeset -A opts=( -s , -v NULL )
+
+    # Parse options. See `man 1 zshmodules` for more details; `zparseopts` is at
+    # the very end. `-K` means to preserve the values in the target array if
+    # they don’t appear in the positional parameters; `-M` allows us to set up
+    # mappings so that `-separator:=s` will put the `--separator` option into
+    # whatever location the `-s` option uses; `-A opts` provides the associative
+    # (-A) array to store the options in. Colons indicate the option takes a
+    # mandatory argument.
+    zparseopts -K -M -A opts -- s: -separator:=s v: -fill-value:=v
+
+    sed "s/${opts[-s]}${opts[-s]}/${opts[-s]}${opts[-v]}${opts[-s]}/g" \
+        | sed "s/${opts[-s]}${opts[-s]}/${opts[-s]}${opts[-v]}${opts[-s]}/g" \
+        | sed "s/^${opts[-s]}/${opts[-v]},/g" \
+        | sed "s/${opts[-s]}$/${opts[-s]}${opts[-v]}/g"
+}
+
+
 # Plugins
 # =======
 

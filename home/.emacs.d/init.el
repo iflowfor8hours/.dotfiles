@@ -22,12 +22,14 @@
 (fset 'yes-or-no-p 'y-or-n-p)
 (setq user-full-name "Daniel Grady"
       user-mail-address "danielgrady@danielgrady.info"
-      require-final-newline t
-      visible-bell t
-      load-prefer-newer t
-      sentence-end-double-space nil
+      backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
       custom-file (concat user-emacs-directory "custom.el")
-      backup-directory-alist `(("." . ,(concat user-emacs-directory "backups"))))
+      load-prefer-newer t
+      require-final-newline t
+      scroll-preserve-screen-position t
+      sentence-end-double-space nil
+      tab-always-indent 'complete
+      visible-bell t)
 (setq-default fill-column 80)
 
 (defvar apropos-do-all t
@@ -53,6 +55,7 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
 (package-initialize)
 
 (unless package-archive-contents
@@ -156,7 +159,8 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 (use-package hippie-exp
   :bind ("M-/" . hippie-expand))
 
-(use-package hydra) ; Make sure it’s installed
+(use-package hydra)		   ; Make sure it’s installed (and also load it)
+(require 'hydra)		   ; Silence warnings from the compiler
 
 (use-package ibuffer
   :bind ("C-x C-b" . ibuffer))
@@ -208,6 +212,20 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 	 ("C-?" . mc/edit-lines)
 	 ("s-<mouse-1>" . mc/add-cursor-on-click)))
 
+;; The stock `org' is version 8 (I think). If you install a newer version of
+;; `org' (currently at version 9), after the stock version has been loaded,
+;; byte-compilation will do screwy things because of various major changes
+;; (`org-babel-check-confirm-evaluate' changed from a macro to a function; other
+;; stuff). This seems to be the simplest solution: make sure we install the
+;; newest available version from the Org repositories, before `use-package'
+;; starts pulling other things in. This will also mark `org-plus-contrib' as a
+;; selected package, which is nice; this won’t happen otherwise because there’s
+;; already a version of `org' installed so `(use-package org)' doesn’t mark it,
+;; but `ox-reveal' depends on a newer version of `org', so `(use-package
+;; ox-reveal)' ends up marking `org' as a dependency.
+(unless (package-installed-p 'org-plus-contrib)
+  (package-install 'org-plus-contrib))
+
 (use-package org
   :diminish (org-indent-mode " ⇥")
   :bind (("C-c c" . org-capture))
@@ -225,7 +243,10 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
     (adaptive-wrap-prefix-mode 0)
     (visual-line-mode 1)
     (org-indent-mode 1))
-  (add-hook 'org-mode-hook 'dang/org-mode-hook))
+  (add-hook 'org-mode-hook 'dang/org-mode-hook)
+  ;; Really?!? Really: https://orgmode.org/manual/Languages.html#Languages
+  (add-to-list 'org-babel-load-languages '(shell . t))
+  (org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages))
 
 (use-package org-journal
   :bind ("C-c j" . org-journal-new-entry))
@@ -274,16 +295,17 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
   :if (dang/macOS-p))
 
 (use-package rust-mode
-  :mode "\\.rs\\'"
-  :config
-  (add-hook 'rust-mode-hook 'cargo-minor-mode)
-  (add-hook 'rust-mode-hook 'racer-mode))
+  :defer t)
 
-(use-package cargo :commands (cargo-minor-mode))
+(use-package cargo
+  :hook (rust-mode . cargo-minor-mode))
 
 (use-package racer
-  :commands (racer-mode)
-  :config (add-hook 'racer-mode-hook 'eldoc-mode))
+  :hook ((rust-mode . racer-mode)
+	 (racer-mode . eldoc-mode)))
+
+(use-package flycheck-rust
+  :hook (flycheck-mode . flycheck-rust-setup))
 
 (use-package saveplace
   :config

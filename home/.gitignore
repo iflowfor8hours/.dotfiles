@@ -1,5 +1,10 @@
 # -*- mode: gitignore; -*-
 
+.ensime
+/.ensime_cache/
+
+.mypy_cache
+
 
 ## From https://github.com/github/gitignore/blob/master/Global/Emacs.gitignore
 

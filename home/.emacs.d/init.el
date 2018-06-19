@@ -126,7 +126,10 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 
 (use-package exec-path-from-shell
   :if (and (dang/macOS-p) (display-graphic-p))
-  :config (exec-path-from-shell-initialize))
+  :config
+  (exec-path-from-shell-initialize)
+  (let ((gls (executable-find "gls")))
+    (if gls (setq insert-directory-program gls))))
 
 (use-package expand-region
   :bind

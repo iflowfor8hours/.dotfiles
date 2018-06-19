@@ -6,6 +6,12 @@
 .mypy_cache
 
 
+## My stuff
+
+.ensime
+.ensime_cache/
+
+
 ## From https://github.com/github/gitignore/blob/master/Global/Emacs.gitignore
 
 *~

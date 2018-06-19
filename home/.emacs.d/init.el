@@ -122,7 +122,7 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 (electric-pair-mode t)
 
 (use-package ensime
-  :disabled)
+  :custom (ensime-startup-notification nil))
 
 (use-package exec-path-from-shell
   :if (and (dang/macOS-p) (display-graphic-p))

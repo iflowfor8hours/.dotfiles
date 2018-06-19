@@ -193,6 +193,7 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 (setq json-encoding-default-indentation "\t")
 
 (use-package magit
+  :init (global-magit-file-mode)
   :bind ("C-c g" . magit-status))
 
 (use-package markdown-mode

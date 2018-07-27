@@ -86,6 +86,12 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
   :hook ((python-mode . anaconda-mode)
 	 (python-mode . anaconda-eldoc-mode)))
 
+;; YAPF is the most widespread tool for Python code formatting, but it doesn’t
+;; do a good job with chained method calls. `black` is a newer Python code
+;; formatter that seems to do a good job with chained method calls. Cons: it’s
+;; in beta; it’s not installed by default in any distributions.
+(use-package blacken)
+
 (use-package company
   :diminish " ɕ"
   :hook (prog-mode . company-mode))
@@ -99,8 +105,8 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
   :bind (("M-x" . counsel-M-x)
 	 ("C-c k" . counsel-ag)
 	 ("<f1> b" . counsel-descbinds)
-	 ("<f1> f" . counsel-describe-function)
-	 ("<f1> v" . counsel-describe-variable)
+	 ;; ("<f1> f" . counsel-describe-function)
+	 ;; ("<f1> v" . counsel-describe-variable)
 	 ("C-x C-f" . counsel-find-file)
 	 ("C-c f" . counsel-git) ; Like `find-file'
 	 ("C-c t" . counsel-git-grep)
@@ -138,26 +144,17 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 
 (use-package flycheck
   :diminish " ✓"
-  :init (global-flycheck-mode)
-  :config
-  ;; Pylint behaves poorly with the current release of Anaconda
-  (setq-default flycheck-disabled-checkers '(python-pylint))
-  ;; Set up mypy as a new syntax checker
-  (flycheck-define-command-checker 'python-mypy
-    "Use `mypy` to type-check Python code"
-    :command '("mypy" "--show-column-numbers" source-original)
-    :error-patterns
-    '((error line-start (file-name) ":" line ":" column ": error:" (message) line-end))
-    :modes 'python-mode
-    )
-  ;; Flycheck's checkers for Python don't chain together, so we need
-  ;; to add this to the front of the list
-  (add-to-list 'flycheck-checkers 'python-mypy)
-  )
+  :init (global-flycheck-mode))
 
 (use-package gist
   :bind (("C-c %" . gist-list)
 	 ("C-c ^" . gist-region-or-buffer)))
+
+(use-package helpful
+  :bind (("<f1> f" . helpful-callable)
+	 ("<f1> k" . helpful-key)
+	 ("<f1> v" . helpful-variable)
+	 ("C-c C-d" . helpful-at-point)))
 
 (use-package hippie-exp
   :bind ("M-/" . hippie-expand))
@@ -256,8 +253,8 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
   :bind ("C-c j" . org-journal-new-entry))
 
 (use-package osx-clipboard
-  ;; Terminal Emacs uses system clipboard on macOS. Does nothing if
-  ;; enabled on other systems or in GUI Emacs.
+  ;; Terminal Emacs uses system clipboard on macOS. Does nothing if enabled on
+  ;; other systems or in GUI Emacs.
   :config (osx-clipboard-mode 1)
   :diminish " ✄ ")
 
@@ -267,7 +264,7 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
   :config (osx-trash-setup))
 
 (use-package ox-reveal
-  :after 'org
+  :after org
   :custom (org-reveal-root "http://cdn.jsdelivr.net/reveal.js/3.0.0/"))
 
 (use-package paredit

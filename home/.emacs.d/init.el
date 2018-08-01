@@ -108,7 +108,7 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 	 ;; ("<f1> f" . counsel-describe-function)
 	 ;; ("<f1> v" . counsel-describe-variable)
 	 ("C-x C-f" . counsel-find-file)
-	 ("C-c f" . counsel-git) ; Like `find-file'
+	 ("C-c f" . counsel-git)	; Like `find-file'
 	 ("C-c t" . counsel-git-grep)
 	 ("C-s" . counsel-grep-or-swiper)
 	 ("C-c u" . counsel-imenu)
@@ -119,9 +119,7 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 	 ("M-`" . counsel-tmm)
 	 ("<f2> u" . counsel-unicode-char)
 	 ("M-y" . counsel-yank-pop))
-  :custom
-  (counsel-ag-base-command "ag --nocolor --nogroup --search-zip %s" "Search inside zip files with ag")
-  )
+  :custom (counsel-ag-base-command "ag --nocolor --nogroup --search-zip %s" "Search inside zip files with ag"))
 
 (diminish 'eldoc-mode " λ?")
 
@@ -144,7 +142,7 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 
 (use-package flycheck
   :diminish " ✓"
-  :init (global-flycheck-mode))
+  :config (global-flycheck-mode))
 
 (use-package gist
   :bind (("C-c %" . gist-list)
@@ -172,10 +170,8 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 	 ("C-r" . isearch-backward-regexp)))
 
 (use-package ivy
-  :demand t
   :diminish " ❦"
-  :config
-  (ivy-mode 1)
+  :config (ivy-mode 1)
   :custom
   (ivy-use-selectable-prompt t "Use C-p to turn the current text into a selectable item")
   (ivy-use-virtual-buffers t "Add `recentf-mode' and bookmarks to `ivy-switch-buffer'")
@@ -280,14 +276,11 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
   ;; the ability to select from a list of actions / apply actions without
   ;; leaving the completion session.
   :custom (projectile-completion-system 'ivy)
-  :bind ("C-c p" . projectile-mode))
+  :config (projectile-mode 1))
 
 (use-package python
   :defer t
-  :custom
-  (python-shell-interpreter "ipython")
-  (python-shell-interpreter-args "--simple-prompt")
-  (python-fill-docstring-style 'django))
+  :custom (python-fill-docstring-style 'django))
 
 (use-package recentf
   :config (recentf-mode 1))
@@ -316,6 +309,7 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 (use-package smart-mode-line
   :config (sml/setup))
 
+;; Make sure smex is installed so that `counsel-M-x' uses the smex rankings
 (use-package smex)
 
 (use-package undo-tree

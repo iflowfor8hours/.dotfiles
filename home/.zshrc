@@ -292,7 +292,9 @@ setopt multios
 # function definition is read
 autoload -U zmv
 
-export EDITOR=emacs
+export ALTERNATE_EDITOR=
+export EDITOR=emacsclient
+alias e=emacsclient
 
 alias glog="git log --oneline --decorate --graph"
 

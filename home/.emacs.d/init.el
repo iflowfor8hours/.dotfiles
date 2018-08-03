@@ -2,7 +2,13 @@
 ;;
 ;;;; Commentary:
 ;;
-;; This is an init file. There's not much to see
+;; This is an init file. There's not much to see.
+;;
+;; The `use-package' macro provides a `:custom' keyword for adding settings to
+;; the `custom-set-variables' form; it also allows you to pass a doc string to
+;; remind yourself what’s going on. The disadvantage of using this keyword is
+;; that if you ever *unset* one of the variables, it will stay in your custom
+;; file.
 ;;
 
 ;;;; Code:
@@ -46,11 +52,6 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 (if (file-readable-p custom-file)
     (load custom-file))
 
-(add-hook 'text-mode-hook 'visual-line-mode)
-
-(global-hl-line-mode t)
-(savehist-mode 1)
-
 ;;; Configure packages
 
 (require 'package)
@@ -82,9 +83,12 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
   :hook (text-mode . adaptive-wrap-prefix-mode))
 
 (use-package anaconda-mode
-  :diminish (anaconda-mode . " A")
+  :diminish (anaconda-mode . " ☤")
   :hook ((python-mode . anaconda-mode)
 	 (python-mode . anaconda-eldoc-mode)))
+
+(use-package autorevert
+  :diminish auto-revert-mode)
 
 ;; YAPF is the most widespread tool for Python code formatting, but it doesn’t
 ;; do a good job with chained method calls. `black` is a newer Python code
@@ -93,7 +97,7 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 (use-package blacken)
 
 (use-package company
-  :diminish " ɕ"
+  :diminish
   :hook (prog-mode . company-mode))
 
 (use-package company-anaconda
@@ -105,8 +109,6 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
   :bind (("M-x" . counsel-M-x)
 	 ("C-c k" . counsel-ag)
 	 ("<f1> b" . counsel-descbinds)
-	 ;; ("<f1> f" . counsel-describe-function)
-	 ;; ("<f1> v" . counsel-describe-variable)
 	 ("C-x C-f" . counsel-find-file)
 	 ("C-c f" . counsel-git)	; Like `find-file'
 	 ("C-c t" . counsel-git-grep)
@@ -119,14 +121,16 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 	 ("M-`" . counsel-tmm)
 	 ("<f2> u" . counsel-unicode-char)
 	 ("M-y" . counsel-yank-pop))
-  :custom (counsel-ag-base-command "ag --nocolor --nogroup --search-zip %s" "Search inside zip files with ag"))
+  ;; Search inside zip files with ag
+  :config (setq counsel-ag-base-command "ag --nocolor --nogroup --search-zip %s"))
 
-(diminish 'eldoc-mode " λ?")
+(diminish 'eldoc-mode " ?")
 
 (electric-pair-mode t)
 
 (use-package ensime
-  :custom (ensime-startup-notification nil))
+  :config (setq ensime-startup-notification nil)
+  :defer t)
 
 (use-package exec-path-from-shell
   :if (and (dang/macOS-p) (display-graphic-p))
@@ -141,8 +145,8 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
   ("C-c '" . er/expand-region))
 
 (use-package flycheck
-  :diminish " ✓"
-  :config (global-flycheck-mode))
+  :config (global-flycheck-mode)
+  :diminish)
 
 (use-package gist
   :bind (("C-c %" . gist-list)
@@ -153,6 +157,8 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 	 ("<f1> k" . helpful-key)
 	 ("<f1> v" . helpful-variable)
 	 ("C-c C-d" . helpful-at-point)))
+
+(global-hl-line-mode t)
 
 (use-package hippie-exp
   :bind ("M-/" . hippie-expand))
@@ -170,13 +176,18 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 	 ("C-r" . isearch-backward-regexp)))
 
 (use-package ivy
-  :diminish " ❦"
-  :config (ivy-mode 1)
-  :custom
-  (ivy-use-selectable-prompt t "Use C-p to turn the current text into a selectable item")
-  (ivy-use-virtual-buffers t "Add `recentf-mode' and bookmarks to `ivy-switch-buffer'")
-  (ivy-virtual-abbreviate 'full "Show full paths to virtual buffers")
-  :bind ("C-c C-r" . ivy-resume))
+  :bind ("C-c C-r" . ivy-resume)
+  :config
+  (ivy-mode 1)
+  (setq
+   ;; Use C-p to turn the current text into a selectable item
+   ivy-use-selectable-prompt t
+   ;; Add `recentf-mode' and bookmarks to `ivy-switch-buffer'
+   ivy-use-virtual-buffers t
+   ;; Show full paths to virtual buffers
+   ivy-virtual-abbreviate 'full)
+  :demand t
+  :diminish)
 
 (use-package ivy-hydra
   ;; Provides a useful hydra in ivy completion buffers; binds to C-o
@@ -186,19 +197,18 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 (setq json-encoding-default-indentation "\t")
 
 (use-package magit
-  :init (global-magit-file-mode)
-  :bind ("C-c g" . magit-status))
+  :config (global-magit-file-mode))
 
 (use-package markdown-mode
+  :config (setq markdown-command "multimarkdown")
   :mode (("README\\.md\\'" . gfm-mode)
 	 ("\\.md\\'" . markdown-mode)
 	 ("\\.markdown\\'" . markdown-mode)
-	 ("\\.mdown\\'" . markdown-mode))
-  :custom (markdown-command "multimarkdown"))
+	 ("\\.mdown\\'" . markdown-mode)))
 
 (use-package misc
-  :ensure nil
-  :bind ("M-z" . zap-up-to-char))
+  :bind ("M-z" . zap-up-to-char)
+  :ensure nil)
 
 (use-package multiple-cursors
   :bind (("C->" . mc/mark-next-like-this)
@@ -222,18 +232,8 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 ;; ox-reveal)' ends up marking `org' as a dependency.
 (unless (package-installed-p 'org-plus-contrib)
   (package-install 'org-plus-contrib))
-
 (use-package org
-  :diminish (org-indent-mode " ⇥")
-  :bind (("C-c c" . org-capture))
-  ;; These are used in `dang/narrow-or-widen-dwim', and might (?) be called
-  ;; before org is loaded. `org-indent-mode' should not need to be in this list,
-  ;; but there’s some issue with `use-package' and byte compiler warnings.
-  :commands (org-indent-mode org-edit-src-code org-narrow-to-block org-narrow-to-subtree)
-  :custom
-  (org-default-notes-file "~/org/¶ Notes.org")
-  (org-log-done 'time)
-  (org-use-speed-commands t)
+  :bind ("C-c c" . org-capture)
   :config
   (defun dang/org-mode-hook ()
     "Set up line wrapping and indentation for `org-mode' just the way I like it."
@@ -241,9 +241,14 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
     (visual-line-mode 1)
     (org-indent-mode 1))
   (add-hook 'org-mode-hook 'dang/org-mode-hook)
+  (diminish 'org-indent-mode " ⇥")
   ;; Really?!? Really: https://orgmode.org/manual/Languages.html#Languages
   (add-to-list 'org-babel-load-languages '(shell . t))
-  (org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages))
+  (org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages)
+  (setq org-default-notes-file "~/org/¶ Notes.org"
+	org-log-done 'time
+	org-use-speed-commands t)
+  )
 
 (use-package org-journal
   :bind ("C-c j" . org-journal-new-entry))
@@ -256,12 +261,13 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 
 (use-package osx-trash
   :if (dang/macOS-p)
-  :custom (delete-by-moving-to-trash t)
-  :config (osx-trash-setup))
+  :config
+  (setq delete-by-moving-to-trash t)
+  (osx-trash-setup))
 
 (use-package ox-reveal
   :after org
-  :custom (org-reveal-root "http://cdn.jsdelivr.net/reveal.js/3.0.0/"))
+  :config (setq org-reveal-root "http://cdn.jsdelivr.net/reveal.js/3.0.0/"))
 
 (use-package paredit
   :diminish " ⁽₎"
@@ -272,15 +278,15 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 	 ("M-C-r" . phi-search-backward)))
 
 (use-package projectile
-  ;; There is also https://github.com/ericdanan/counsel-projectile, which adds
-  ;; the ability to select from a list of actions / apply actions without
-  ;; leaving the completion session.
-  :custom (projectile-completion-system 'ivy)
-  :config (projectile-mode 1))
+  :config
+  (setq projectile-completion-system 'ivy)
+  (projectile-mode 1)
+  :diminish ; smart-mode-line already displays the Projectile project name
+  )
 
 (use-package python
-  :defer t
-  :custom (python-fill-docstring-style 'django))
+  :config (setq python-fill-docstring-style 'django)
+  :defer t)
 
 (use-package recentf
   :config (recentf-mode 1))
@@ -292,20 +298,28 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
   :defer t)
 
 (use-package cargo
+  :diminish cargo-minor-mode
   :hook (rust-mode . cargo-minor-mode))
 
 (use-package racer
+  :diminish
   :hook ((rust-mode . racer-mode)
 	 (racer-mode . eldoc-mode)))
 
 (use-package flycheck-rust
   :hook (flycheck-mode . flycheck-rust-setup))
 
+(savehist-mode 1)
+
 (use-package saveplace
   :config
   (setq save-place-file (concat user-emacs-directory "places"))
   (save-place-mode 1))
 
+;; NB. By default `smart-mode-line' will automatically choose which of its
+;; themes to load, and the logic seems to depend on whether emacs is started as
+;; a daemon, whether there are custom faces defined, and possibly other things.
+;; Manually mark all of its themes as safe to prevent any theme-loading issues.
 (use-package smart-mode-line
   :config (sml/setup))
 
@@ -313,29 +327,30 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 (use-package smex)
 
 (use-package undo-tree
-  :diminish undo-tree-mode
-  :custom
-  (undo-tree-visualizer-timestamps t)
-  (undo-tree-visualizer-diff t)
-  :config (global-undo-tree-mode))
+  :config
+  (global-undo-tree-mode)
+  (setq undo-tree-visualizer-timestamps t
+	undo-tree-visualizer-diff t)
+  :diminish undo-tree-mode)
 
 (use-package uniquify
-  :ensure nil
-  :custom (uniquify-buffer-name-style 'forward))
+  :config (setq uniquify-buffer-name-style 'forward)
+  :ensure nil)
 
 (diminish 'visual-line-mode " ↩")
+(add-hook 'text-mode-hook 'visual-line-mode)
 
 (use-package wgrep
   :after (ivy counsel))
 
 (use-package which-key
-  :diminish " ‽"
-  :config (which-key-mode))
+  :config (which-key-mode)
+  :diminish)
 
 (use-package winner
-  :demand t
   :commands (winner-undo winner-redo)
-  :config (winner-mode 1))
+  :config (winner-mode 1)
+  :demand t)
 
 
 ;;; Hydras
@@ -360,17 +375,17 @@ _F_ollow mode
 _z_ undo  _Z_ redo
 
 _SPC_ cancel"
-   
+
    ;; Change window focus
    ("h" windmove-left)
    ("j" windmove-down)
    ("k" windmove-up)
    ("l" windmove-right)
    ("a" (lambda ()
-          (interactive)
-          (ace-window 1)
-          (add-hook 'ace-window-end-once-hook
-                    'hydra-window/body))
+	  (interactive)
+	  (ace-window 1)
+	  (add-hook 'ace-window-end-once-hook
+		    'hydra-window/body))
        )
 
    ;; Change window size
@@ -382,23 +397,23 @@ _SPC_ cancel"
 
    ;; Create new windows
    ("v" (lambda ()
-          (interactive)
-          (split-window-right)
-          (windmove-right))
+	  (interactive)
+	  (split-window-right)
+	  (windmove-right))
     )
    ("t" (lambda ()
-          (interactive)
-          (split-window-below)
-          (windmove-down))
+	  (interactive)
+	  (split-window-below)
+	  (windmove-down))
     )
 
    ;; Delete windows
    ("d" delete-window)
    ("D" (lambda ()
-          (interactive)
-          (ace-window 16)
-          (add-hook 'ace-window-end-once-hook
-                    'hydra-window/body))
+	  (interactive)
+	  (ace-window 16)
+	  (add-hook 'ace-window-end-once-hook
+		    'hydra-window/body))
        )
    ("o" delete-other-windows)
    ("O" ace-delete-other-windows)
@@ -407,10 +422,10 @@ _SPC_ cancel"
    ("f" (call-interactively (global-key-binding (kbd "C-x C-f"))))
    ("S" save-buffer)
    ("s" (lambda ()
-          (interactive)
-          (ace-window 4)
-          (add-hook 'ace-window-end-once-hook
-                    'hydra-window/body)))
+	  (interactive)
+	  (ace-window 4)
+	  (add-hook 'ace-window-end-once-hook
+		    'hydra-window/body)))
 
    ;; Winner mode
    ("z" winner-undo)
@@ -418,7 +433,7 @@ _SPC_ cancel"
 
    ;; Other random stuff
    ("F" follow-mode)
-   
+
    ("SPC" nil)
    )
 
@@ -492,18 +507,18 @@ is already narrowed."
   (interactive "P")
   (declare (interactive-only))
   (cond ((and (buffer-narrowed-p) (not p)) (widen))
-        ((region-active-p)
-         (narrow-to-region (region-beginning)
-                           (region-end)))
-        ((derived-mode-p 'org-mode)
-         ;; `org-edit-src-code' is not a real narrowing
-         ;; command. Remove this first conditional if
-         ;; you don't want it.
-         (cond ((ignore-errors (org-edit-src-code) t)
-                (delete-other-windows))
-               ((ignore-errors (org-narrow-to-block) t))
-               (t (org-narrow-to-subtree))))
-        (t (narrow-to-defun))))
+	((region-active-p)
+	 (narrow-to-region (region-beginning)
+			   (region-end)))
+	((derived-mode-p 'org-mode)
+	 ;; `org-edit-src-code' is not a real narrowing
+	 ;; command. Remove this first conditional if
+	 ;; you don't want it.
+	 (cond ((ignore-errors (org-edit-src-code) t)
+		(delete-other-windows))
+	       ((ignore-errors (org-narrow-to-block) t))
+	       (t (org-narrow-to-subtree))))
+	(t (narrow-to-defun))))
 
 
 ;;; Non-package-related keybindings

@@ -27,7 +27,6 @@
 
 (fset 'yes-or-no-p 'y-or-n-p)
 (setq user-full-name "Daniel Grady"
-      user-mail-address "danielgrady@danielgrady.info"
       backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
       custom-file (concat user-emacs-directory "custom.el")
       load-prefer-newer t
@@ -96,9 +95,22 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 ;; in beta; it’s not installed by default in any distributions.
 (use-package blacken)
 
+;; Use company as the single completion interface. It should replace dabbrev,
+;; hippie-expand, completion-at-point. Cheat sheet notes:
+;; - Completion starts automatically after typing a few letters
+;; - M-n and M-p move through the list; <return> accepts the selected
+;;   completion; <tab> completes the common part
+;; - Search candidates with C-s, C-r, C-o
+;; - Select one of the first 10 candidates with M-<digit>
+;; - <f1> displays help for the currently selected candidate; C-w shows its
+;;   source (not supported by all backends)
 (use-package company
-  :diminish
-  :hook (prog-mode . company-mode))
+  :bind (("M-/" . company-complete)
+	 ("M-TAB" . company-complete)
+	 ("C-M-/" . company-complete)
+	 ("C-M-i" . company-complete))
+  :diminish " ɕ"
+  :init (global-company-mode))
 
 (use-package company-anaconda
   :after (anaconda-mode company)
@@ -159,9 +171,6 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 	 ("C-c C-d" . helpful-at-point)))
 
 (global-hl-line-mode t)
-
-(use-package hippie-exp
-  :bind ("M-/" . hippie-expand))
 
 (use-package hydra)		   ; Make sure it’s installed (and also load it)
 (require 'hydra)		   ; Silence warnings from the compiler
@@ -333,10 +342,6 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 	undo-tree-visualizer-diff t)
   :diminish undo-tree-mode)
 
-(use-package uniquify
-  :config (setq uniquify-buffer-name-style 'forward)
-  :ensure nil)
-
 (diminish 'visual-line-mode " ↩")
 (add-hook 'text-mode-hook 'visual-line-mode)
 
@@ -347,10 +352,8 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
   :config (which-key-mode)
   :diminish)
 
-(use-package winner
-  :commands (winner-undo winner-redo)
-  :config (winner-mode 1)
-  :demand t)
+(require 'winner)
+(winner-mode 1)
 
 
 ;;; Hydras

@@ -287,9 +287,11 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
 	 ("M-C-r" . phi-search-backward)))
 
 (use-package projectile
+  :bind (:map projectile-mode-map ("C-c p" . projectile-command-map))
   :config
   (setq projectile-completion-system 'ivy)
   (projectile-mode 1)
+  :demand t
   :diminish ; smart-mode-line already displays the Projectile project name
   )
 

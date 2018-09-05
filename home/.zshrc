@@ -280,6 +280,8 @@ autoload -U down-line-or-beginning-search
 zle -N down-line-or-beginning-search
 bindkey "^[[B" down-line-or-beginning-search
 
+bindkey "^R" zaw-history
+
 
 # Other
 # =====
@@ -307,4 +309,4 @@ alias conde="source deactivate"
 # Local settings
 # ==============
 
-source_if_possible "$HOME/.local_zshrc"
+source_if_possible "$HOME/.local.zshrc"

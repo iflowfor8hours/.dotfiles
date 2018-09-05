@@ -327,6 +327,11 @@ https://www.gnu.org/software/emacs/manual/html_node/emacs/Apropos.html")
   (setq save-place-file (concat user-emacs-directory "places"))
   (save-place-mode 1))
 
+;; The standard rules in `auto-mode-alist' work when the file name is exactly
+;; '.zshrc' or similar. We want to go to shell mode for any file name that ends
+;; with these suffixes.
+(add-to-list 'auto-mode-alist '("\\.zshenv\\'\\|\\.zprofile\\'\\|\\.zshrc\\'\\|\\.zlogin\\'\\|\\.zlogout\\'" . sh-mode))
+
 ;; NB. By default `smart-mode-line' will automatically choose which of its
 ;; themes to load, and the logic seems to depend on whether emacs is started as
 ;; a daemon, whether there are custom faces defined, and possibly other things.

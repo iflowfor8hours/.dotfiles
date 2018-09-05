@@ -1,3 +1,3 @@
-if [[ -r "$HOME/.local_zprofile" ]]; then
-    source "$HOME/.local_zprofile"
+if [[ -r "$HOME/.local.zprofile" ]]; then
+    source "$HOME/.local.zprofile"
 fi
